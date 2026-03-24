@@ -1,0 +1,85 @@
+/* ─── GLOBAL STYLES ──────────────────────────────────────────────────────────── */
+/* Brand: Care Teal #46c4d9 · Trust Blue #1275ad · Deep Blue #13527a · Slate #7a8fa0 · Amber #e29926 */
+/* Fonts: Outfit (headings) · Poppins (body/UI) */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { overflow-x: hidden; }
+body { font-family: 'Poppins', sans-serif; background: #F6F9FA; color: #0E1C26; }
+h1, h2, h3, h4, h5, h6 { font-family: 'Outfit', sans-serif; }
+
+@keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
+@keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+@keyframes slideInLeft { from{transform:translateX(-100%);opacity:0} to{transform:translateX(0);opacity:1} }
+
+.fade-up { animation: fadeUp .22s ease forwards; }
+
+/* ─── Search bar dropdown styles ─────────────────────────────────────────── */
+@keyframes dropFade {
+  from { opacity:0; transform:translateY(-8px) scale(.98); }
+  to   { opacity:1; transform:translateY(0)    scale(1);   }
+}
+.dd-opt:hover { background: rgba(70,196,217,.08) !important; }
+.sb-cell::after { content:''; position:absolute; right:0; top:18%; bottom:18%; width:1px; background:linear-gradient(to bottom, transparent, #D6E4EA 35%, #D6E4EA 65%, transparent); }
+.dd-scroll::-webkit-scrollbar { width: 4px; }
+.dd-scroll::-webkit-scrollbar-track { background: transparent; }
+.dd-scroll::-webkit-scrollbar-thumb { background: #D6E4EA; border-radius: 999px; }
+.dd-scroll::-webkit-scrollbar-thumb:hover { background: #46c4d9; }
+.dd-scroll::-webkit-scrollbar-button { display: none; }
+.slide-in-left { animation: slideInLeft .25s ease forwards; }
+
+.nav-link { position:relative; font-size:13.5px; font-weight:500; cursor:pointer; padding:5px 0; transition:color .18s; color:#7a8fa0; background:none; border:none; font-family:'Poppins',sans-serif; letter-spacing:.01em; }
+.nav-link:hover { color:#46c4d9; }
+.nav-link::after { content:''; position:absolute; bottom:-2px; left:0; width:0; height:2px; background:#46c4d9; transition:width .22s ease; border-radius:2px; }
+.nav-link:hover::after { width:100%; }
+.nav-link.accent { color:#46c4d9; font-weight:600; }
+
+.btn-primary { transition:background .15s, transform .1s, box-shadow .15s; }
+.btn-primary:hover { background:#1275ad !important; transform:translateY(-1px); box-shadow:0 4px 12px rgba(18,117,173,.3); }
+.btn-ghost { transition:all .15s; }
+.btn-ghost:hover { border-color:#46c4d9 !important; color:#46c4d9 !important; background:#E5F7FB !important; }
+.btn-action { border-radius: 22px; transition: background .15s, transform .1s; }
+.btn-action:hover { opacity: 0.9; transform: translateY(-1px); }
+
+.card { transition:box-shadow .18s, transform .18s; }
+.card:hover { box-shadow:0 6px 24px rgba(70,196,217,.14) !important; transform:translateY(-2px); }
+
+.cal-cell { transition:background .12s; cursor:pointer; }
+.cal-cell:hover { background:#E5F7FB; }
+
+.bookmark-btn { transition:all .18s; }
+.bookmark-btn:hover { transform:scale(1.15); }
+
+.chat-history-item { transition:background .12s; }
+.chat-history-item:hover { background:#E5F7FB !important; }
+
+::-webkit-scrollbar { width:4px; height:4px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:#D8E0E8; border-radius:99px; }
+::-webkit-scrollbar-thumb:hover { background:#46c4d9; }
+* { scrollbar-width:thin; scrollbar-color:#D8E0E8 transparent; }
+
+@media (max-width:700px) {
+  .nav-desktop { display:none !important; }
+  .hamburger { display:flex !important; }
+  .home-feature-grid { grid-template-columns:1fr !important; }
+  .home-feature-card { flex-direction:row !important; text-align:left !important; padding:16px !important; }
+  .home-feature-icon { width:40px !important; height:40px !important; flex-shrink:0; }
+  .home-feature-card > div:last-child { text-align:left !important; }
+  .dash-stats { grid-template-columns:repeat(2,1fr) !important; }
+  .facil-leads-table-wrap { display:none !important; }
+  .facil-leads-cards { display:flex !important; flex-direction:column; gap:8px; }
+  .prov-dash-charts { grid-template-columns:1fr !important; }
+  .prov-grid-3col { grid-template-columns:1fr !important; }
+  .facil-charts { grid-template-columns:1fr !important; }
+  .facil-analytics-row { grid-template-columns:1fr !important; }
+  .home-search-box { padding:13px 50px 13px 18px !important; font-size:14px !important; }
+  .home-chips span, .home-chips button { font-size:11px !important; padding:5px 12px !important; }
+  .chat-sidebar { width:280px !important; }
+}
+
+@media (min-width:701px) {
+  .hamburger { display:none !important; }
+  .mobile-menu-panel { display:none !important; }
+  .facil-leads-cards { display:none !important; }
+}
