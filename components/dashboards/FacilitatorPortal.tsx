@@ -238,8 +238,8 @@ export default function FacilitatorPortal({ tab, setTab }: { tab: string; setTab
   };
 
   visible = [...visible].sort((a,b) => {
-    const av = (a as Record<string,unknown>)[sortKey];
-    const bv = (b as Record<string,unknown>)[sortKey];
+    const av = (a as unknown as Record<string,unknown>)[sortKey];
+    const bv = (b as unknown as Record<string,unknown>)[sortKey];
     const aStr = typeof av === "string" ? av.toLowerCase() : av;
     const bStr = typeof bv === "string" ? bv.toLowerCase() : bv;
     if ((aStr as number|string) < (bStr as number|string)) return sortDir === "asc" ? -1 : 1;
