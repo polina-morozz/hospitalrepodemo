@@ -126,6 +126,7 @@ function ProviderCard({ provider, bookmarks, toggleBookmark, isLoggedIn }: Provi
       </button>
       <div style={{ width:52, height:52, borderRadius:12, overflow:"hidden", flexShrink:0, border:`1px solid ${C.borderLt}`, display:"flex", alignItems:"center", justifyContent:"center", background:C.tealLt, fontWeight:800, fontSize:16, color:C.teal }}>
         {provider.photo && !imgErr
+          // eslint-disable-next-line @next/next/no-img-element
           ? <img src={provider.photo} alt={provider.name} onError={()=>setImgErr(true)} style={{ width:"100%", height:"100%", objectFit:"cover" }}/>
           : provider.image}
       </div>
@@ -623,6 +624,7 @@ export default function FindLocalCarePage() {
                     onMouseLeave={e=>{(e.currentTarget as HTMLDivElement).style.transform="none";(e.currentTarget as HTMLDivElement).style.boxShadow="0 2px 10px rgba(0,0,0,.06)";}}>
                     <div style={{ height:140, background:"linear-gradient(135deg, #D4EFF7 0%, #E5F7FB 100%)", overflow:"hidden", position:"relative" }}>
                       {p.photo
+                        // eslint-disable-next-line @next/next/no-img-element
                         ? <img src={p.photo} alt={p.name} style={{ width:"100%", height:"100%", objectFit:"cover" }}/>
                         : <div style={{ width:"100%", height:"100%", display:"flex", alignItems:"center", justifyContent:"center" }}><div style={{ width:60, height:60, borderRadius:14, background:"#46c4d9", color:"#fff", fontWeight:800, fontSize:22, display:"flex", alignItems:"center", justifyContent:"center" }}>{p.image}</div></div>}
                       {p.contracted && (

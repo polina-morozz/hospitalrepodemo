@@ -556,6 +556,7 @@ export default function ProviderDashboard({ tab, setTab }: { tab: string; setTab
             <button onClick={()=>setExpandedClinic(expandedClinic===clinic.id?null:clinic.id)}
               style={{ width:"100%", display:"flex", alignItems:"center", gap:14, padding:"18px 22px", background:"none", border:"none", cursor:"pointer", fontFamily:"inherit", textAlign:"left" }}>
               <div style={{ width:44, height:44, borderRadius:12, background:clinic.avatar?"transparent":C.tealLt, border:`1px solid ${C.borderLt}`, display:"flex", alignItems:"center", justifyContent:"center", fontWeight:800, fontSize:14, color:C.teal, flexShrink:0, overflow:"hidden" }}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 {clinic.avatar ? <img src={clinic.avatar} alt="" style={{ width:"100%", height:"100%", objectFit:"cover" }}/> : clinic.name.split(" ").map(w=>w[0]).slice(0,2).join("")}
               </div>
               <div style={{ flex:1, minWidth:0 }}>
@@ -573,6 +574,7 @@ export default function ProviderDashboard({ tab, setTab }: { tab: string; setTab
               <div className="fade-up" style={{ padding:"0 22px 22px", borderTop:`1px solid ${C.borderLt}` }}>
                 <div style={{ display:"flex", gap:14, alignItems:"center", padding:"18px 0 14px" }}>
                   <div onClick={()=>fileRefs.current[clinic.id]?.click()} style={{ width:64, height:64, borderRadius:16, background:clinic.avatar?"transparent":C.tealLt, border:`2px dashed ${clinic.avatar?C.teal:C.border}`, display:"flex", alignItems:"center", justifyContent:"center", cursor:"pointer", overflow:"hidden", flexShrink:0 }}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     {clinic.avatar ? <img src={clinic.avatar} alt="" style={{ width:"100%", height:"100%", objectFit:"cover" }}/> : <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={C.teal} strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>}
                   </div>
                   <input ref={el=>{fileRefs.current[clinic.id]=el;}} type="file" accept="image/*" onChange={e=>handleAvatar(clinic.id,e)} style={{ display:"none" }} />

@@ -211,7 +211,7 @@ export default function MedicalTourismPage() {
           <div style={{ maxWidth:800, margin:"0 auto", display:"flex", alignItems:isMobile?"stretch":"center", gap:24, flexDirection:isMobile?"column":"row" }}>
             <div style={{ flex:1 }}>
               <h2 style={{ fontSize:isMobile?20:26, fontWeight:800, marginBottom:10 }}>Hospital.com service is <span style={{ color:C.teal }}>absolutely free.</span></h2>
-              <p style={{ color:C.textSm, fontSize:14, lineHeight:1.65, marginBottom:18 }}>You pay the same rates for treatment as in the clinic's original price list. We earn from the clinic — not from you.</p>
+              <p style={{ color:C.textSm, fontSize:14, lineHeight:1.65, marginBottom:18 }}>You pay the same rates for treatment as in the clinic&apos;s original price list. We earn from the clinic — not from you.</p>
               <button className="btn-primary" onClick={() => setFacilitatorModal(true)}
                 style={{ background:C.teal, color:"#fff", border:"none", borderRadius:22, padding:"12px 28px", fontWeight:700, fontSize:14, cursor:"pointer", fontFamily:"inherit" }}>
                 Find a Solution
@@ -234,7 +234,7 @@ export default function MedicalTourismPage() {
                   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={C.teal} strokeWidth="2.5"><polyline points="20,6 9,17 4,12"/></svg>
                 </div>
                 <div style={{ fontWeight:700, fontSize:16 }}>Request Sent!</div>
-                <p style={{ color:C.textSm, fontSize:13, marginTop:6 }}>We'll be in touch within 24 hours.</p>
+                <p style={{ color:C.textSm, fontSize:13, marginTop:6 }}>We&apos;ll be in touch within 24 hours.</p>
               </div>
             ) : (
               <>

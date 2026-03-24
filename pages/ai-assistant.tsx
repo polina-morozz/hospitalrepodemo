@@ -246,6 +246,7 @@ function ProviderMiniCard({ provider, onOpen }: ProviderMiniCardProps) {
       style={{ background:C.white, border:`1px solid ${C.border}`, borderRadius:14, padding:"12px 14px", cursor:"pointer", display:"flex", gap:12, alignItems:"flex-start", boxShadow:"0 1px 4px rgba(0,0,0,.05)" }}>
       <div style={{ width:42, height:42, borderRadius:12, overflow:"hidden", flexShrink:0, border:`1px solid ${C.borderLt}`, display:"flex", alignItems:"center", justifyContent:"center", background:C.tealLt, fontWeight:800, fontSize:13, color:C.teal }}>
         {provider.photo && !imgErr
+          // eslint-disable-next-line @next/next/no-img-element
           ? <img src={provider.photo} alt={provider.name} onError={()=>setImgErr(true)} style={{ width:"100%", height:"100%", objectFit:"cover" }}/>
           : provider.image}
       </div>
@@ -282,6 +283,7 @@ function ProviderModal({ provider, onClose }: { provider: Provider; onClose: () 
           <div style={{ display:"flex", gap:16, alignItems:"flex-start" }}>
             <div style={{ width:60, height:60, borderRadius:14, overflow:"hidden", flexShrink:0, border:`2px solid ${C.tealLt}`, display:"flex", alignItems:"center", justifyContent:"center", background:C.white, fontWeight:800, fontSize:18, color:C.teal }}>
               {provider.photo && !imgErr
+                // eslint-disable-next-line @next/next/no-img-element
                 ? <img src={provider.photo} alt={provider.name} onError={() => setImgErr(true)} style={{ width:"100%", height:"100%", objectFit:"cover" }}/>
                 : provider.image}
             </div>
