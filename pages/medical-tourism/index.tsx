@@ -381,7 +381,7 @@ export default function MedicalTourismPage() {
         <Footer />
       </div>
 
-      {facilitatorModal && <FacilitatorModal onClose={() => { setFacilitatorModal(false); setSelectedClinic(null); }} clinic={selectedClinic} />}
+      {facilitatorModal && <FacilitatorModal onClose={() => { setFacilitatorModal(false); setSelectedClinic(null); }} clinic={selectedClinic ?? undefined} />}
     </>
   );
 }
