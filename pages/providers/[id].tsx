@@ -192,7 +192,7 @@ export default function ProviderDetailPage() {
 
         {/* ── STICKY SECONDARY NAV ── */}
         {scrolledProv && (
-          <div style={{ position:"sticky", top:0, zIndex:100, background:C.white, borderBottom:`1px solid ${C.border}`, padding:"0 32px", display:"flex", alignItems:"center", gap:2, overflowX:"auto" }}>
+          <div style={{ position:"sticky", top:0, zIndex:100, background:C.white, borderBottom:`1px solid ${C.border}`, padding: isMobile ? "0 12px" : "0 32px", display:"flex", alignItems:"center", gap:2, overflowX:"auto" }}>
             {PROFILE_SECTIONS.map(s => (
               <button key={s.id} onClick={() => scrollToSection(s.id)}
                 style={{ padding:"12px 16px", background:"none", border:"none", borderBottom:`2px solid ${activeSection===s.id?C.teal:"transparent"}`, color:activeSection===s.id?C.teal:C.textSm, fontWeight:activeSection===s.id?700:500, fontSize:13, cursor:"pointer", fontFamily:"inherit", whiteSpace:"nowrap", transition:"all .15s" }}>
@@ -221,7 +221,7 @@ export default function ProviderDetailPage() {
               <div id="highlights" className="fade-up" style={{ background:C.white, border:`1px solid ${C.border}`, borderRadius:20, padding:isMobile?"20px":"28px 30px", marginBottom:20, boxShadow:"0 2px 12px rgba(0,0,0,.06)" }}>
                 <div style={{ display:"flex", gap:18, alignItems:"flex-start", flexWrap:"wrap" }}>
                   <ProviderAvatar provider={provider} size={80} radius={18} fontSize={24} />
-                  <div style={{ flex:1, minWidth:200 }}>
+                  <div style={{ flex:1, minWidth: isMobile ? 0 : 200 }}>
                     <div style={{ display:"flex", gap:10, alignItems:"center", flexWrap:"wrap", marginBottom:4 }}>
                       <h1 style={{ fontSize:isMobile?20:26, fontWeight:800, margin:0 }}>{provider.name}</h1>
                       {provider.contracted && <SealBadge />}
@@ -337,7 +337,7 @@ export default function ProviderDetailPage() {
               <div id="insurances" className="fade-up" style={{ background:C.white, border:`1px solid ${C.border}`, borderRadius:16, padding:"22px 24px", marginBottom:18, boxShadow:"0 1px 6px rgba(0,0,0,.04)" }}>
                 <h2 style={{ fontWeight:800, fontSize:16, marginBottom:4 }}>In-network insurances</h2>
                 <p style={{ fontSize:12.5, color:C.textSm, marginBottom:16 }}>99% of patients have successfully booked with these insurances</p>
-                <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill, minmax(200px, 1fr))", gap:10, marginBottom:16 }}>
+                <div style={{ display:"grid", gridTemplateColumns: isMobile ? "1fr 1fr" : "repeat(auto-fill, minmax(200px, 1fr))", gap:10, marginBottom:16 }}>
                   {DEMO_INSURANCE_TOP.map(ins => (
                     <div key={ins.name} style={{ display:"flex", alignItems:"center", gap:8, background:C.offWhite, border:`1px solid ${C.border}`, borderRadius:12, padding:"10px 16px" }}>
                       <div style={{ width:28, height:28, borderRadius:8, background:ins.color, display:"flex", alignItems:"center", justifyContent:"center", fontWeight:800, fontSize:11, color:"#fff", flexShrink:0 }}>{ins.name.slice(0,2).toUpperCase()}</div>
@@ -375,7 +375,7 @@ export default function ProviderDetailPage() {
               {/* ── LOCATION + MAP ── */}
               <div id="location" className="fade-up" style={{ background:C.white, border:`1px solid ${C.border}`, borderRadius:16, padding:"22px 24px", marginBottom:18, boxShadow:"0 1px 6px rgba(0,0,0,.04)" }}>
                 <h2 style={{ fontWeight:800, fontSize:16, marginBottom:14 }}>Office location</h2>
-                <div style={{ background:C.gray, border:`2px dashed ${C.grayMd}`, borderRadius:14, height:220, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:8, marginBottom:16 }}>
+                <div style={{ background:C.gray, border:`2px dashed ${C.grayMd}`, borderRadius:14, height: isMobile ? 160 : 220, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:8, marginBottom:16 }}>
                   <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke={C.grayMd} strokeWidth="1.5">
                     <path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z"/>
                     <circle cx="12" cy="10" r="3"/>

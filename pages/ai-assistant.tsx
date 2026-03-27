@@ -169,7 +169,7 @@ function ChatSidebar({ chatHistory, activeChatId, onSelectChat, onNewChat, onDel
       )}
       <div className={isOpen ? "slide-in-left" : ""}
         style={{
-          width: 300,
+          width: isMobile ? "min(300px, 85vw)" : 300,
           background: C.white,
           borderRight: isMobile ? "none" : `1px solid ${C.border}`,
           display: isOpen ? "flex" : "none",
@@ -331,7 +331,7 @@ function ProviderModal({ provider, onClose }: { provider: Provider; onClose: () 
           </div>
 
           {/* Specialties + AI review summary */}
-          <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit, minmax(220px, 1fr))", gap:18 }}>
+          <div style={{ display:"grid", gridTemplateColumns:"1fr", gap:18 }}>
             <div>
               <h3 style={{ fontSize:13.5, fontWeight:700, marginBottom:9 }}>Specialties</h3>
               <div style={{ display:"flex", gap:6, flexWrap:"wrap", marginBottom:12 }}>
@@ -553,7 +553,7 @@ export default function AiAssistantPage() {
                   </div>
 
                   {(msg.providers?.length ?? 0) > 0 && (
-                    <div style={{ marginTop:12, marginLeft:48 }}>
+                    <div style={{ marginTop:12, marginLeft:isMobile?0:48 }}>
                       <p style={{ fontSize:10, color:C.textSm, marginBottom:8, fontWeight:700, letterSpacing:.6 }}>SUGGESTED PROVIDERS</p>
                       <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
                         {msg.providers!.map(p => <ProviderMiniCard key={p.id} provider={p} onOpen={setSelectedProvider} />)}
@@ -562,7 +562,7 @@ export default function AiAssistantPage() {
                   )}
 
                   {(msg.clinics?.length ?? 0) > 0 && (
-                    <div style={{ marginTop:12, marginLeft:48 }}>
+                    <div style={{ marginTop:12, marginLeft:isMobile?0:48 }}>
                       <p style={{ fontSize:10, color:C.textSm, marginBottom:8, fontWeight:700, letterSpacing:.6 }}>RECOMMENDED CLINICS</p>
                       <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
                         {msg.clinics!.map(clinic => <ClinicMiniCard key={clinic.id} clinic={clinic} onContact={() => setFacilitatorModal(true)} />)}
@@ -571,8 +571,8 @@ export default function AiAssistantPage() {
                   )}
 
                   {msg.role === "assistant" && msg.showIntlCTA && (
-                    <div className="fade-up" style={{ marginTop:12, marginLeft:48, background:`linear-gradient(120deg, ${C.purpleLt}, ${C.tealLt})`, border:`1px solid ${C.teal}30`, borderRadius:16, padding:"16px 18px", display:"flex", gap:12, alignItems:"center", flexWrap:"wrap" }}>
-                      <div style={{ flex:1, minWidth:180 }}>
+                    <div className="fade-up" style={{ marginTop:12, marginLeft:isMobile?0:48, background:`linear-gradient(120deg, ${C.purpleLt}, ${C.tealLt})`, border:`1px solid ${C.teal}30`, borderRadius:16, padding:"16px 18px", display:"flex", gap:12, alignItems:"center", flexWrap:"wrap" }}>
+                      <div style={{ flex:1, minWidth: isMobile ? 0 : 180 }}>
                         <div style={{ fontWeight:700, fontSize:13, marginBottom:3, color:C.text }}>Looking for care outside your country?</div>
                         <div style={{ fontSize:12.5, color:C.textMd }}>We can connect you with a medical coordinator who specializes in international care.</div>
                       </div>

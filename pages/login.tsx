@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import C from "@/lib/tokens";
 import { useApp } from "@/lib/context/AppContext";
 import FieldInput from "@/components/ui/FieldInput";
+import useIsMobile from "@/lib/hooks/useIsMobile";
 
 // ─── SocialBtn ────────────────────────────────────────────────────────────────
 interface SocialBtnProps {
@@ -27,6 +28,7 @@ function SocialBtn({ letter, label }: SocialBtnProps) {
 export default function LoginPage() {
   const router = useRouter();
   const { setIsLoggedIn } = useApp();
+  const isMobile = useIsMobile();
   const [role, setRole] = useState("patient");
   const [f, setF] = useState({ email:"", pw:"" });
   const [show, setShow] = useState(false);
@@ -44,15 +46,15 @@ export default function LoginPage() {
         <meta name="description" content="Sign in to your Hospital.com account to book appointments, manage your health records, and access your dashboard." />
         <meta name="robots" content="noindex" />
       </Head>
-      <div style={{ minHeight:"calc(100vh - 58px)", display:"flex", alignItems:"center", justifyContent:"center", padding:"32px 16px", background:`linear-gradient(150deg, ${C.offWhite} 55%, ${C.tealBg})` }}>
-        <div className="fade-up" style={{ width:"100%", maxWidth:440, background:C.white, borderRadius:20, padding:"36px 30px", boxShadow:"0 8px 40px rgba(11,191,191,.1), 0 2px 8px rgba(0,0,0,.06)" }}>
+      <div style={{ minHeight:"calc(100vh - 58px)", display:"flex", alignItems:"center", justifyContent:"center", padding: isMobile ? "20px 12px" : "32px 16px", background:`linear-gradient(150deg, ${C.offWhite} 55%, ${C.tealBg})` }}>
+        <div className="fade-up" style={{ width:"100%", maxWidth:440, background:C.white, borderRadius:20, padding: isMobile ? "28px 18px" : "36px 30px", boxShadow:"0 8px 40px rgba(11,191,191,.1), 0 2px 8px rgba(0,0,0,.06)" }}>
           <div style={{ textAlign:"center", marginBottom:24 }}>
             <h1 style={{ fontSize:22, fontWeight:800, color:C.text, marginBottom:4 }}>Sign In</h1>
             <p style={{ color:C.textSm, fontSize:13 }}>Sign in to your Hospital.com account</p>
           </div>
           <div style={{ display:"flex", gap:8, marginBottom:22 }}>
             {[{val:"patient",label:"Patient"},{val:"provider",label:"Provider"},{val:"facilitator",label:"Facilitator"}].map(r=>(
-              <button key={r.val} onClick={()=>setRole(r.val)} style={{ flex:1, padding:"10px 8px", border:`2px solid ${role===r.val?(r.val==="facilitator"?C.purple:C.teal):C.border}`, borderRadius:50, background:role===r.val?(r.val==="facilitator"?C.purpleLt:C.tealLt):C.white, cursor:"pointer", fontFamily:"inherit", transition:"all .18s", fontSize:13, fontWeight:700, color:role===r.val?(r.val==="facilitator"?C.purple:C.teal):C.textMd }}>
+              <button key={r.val} onClick={()=>setRole(r.val)} style={{ flex:1, padding: isMobile ? "9px 4px" : "10px 8px", border:`2px solid ${role===r.val?(r.val==="facilitator"?C.purple:C.teal):C.border}`, borderRadius:50, background:role===r.val?(r.val==="facilitator"?C.purpleLt:C.tealLt):C.white, cursor:"pointer", fontFamily:"inherit", transition:"all .18s", fontSize: isMobile ? 12 : 13, fontWeight:700, color:role===r.val?(r.val==="facilitator"?C.purple:C.teal):C.textMd }}>
                 {r.label}
               </button>
             ))}

@@ -233,363 +233,315 @@ export default function FindLocalCarePage() {
       <div>
         {/* ─── HERO ─────────────────────────────────────────────────────────── */}
         <div style={{
-          background: "linear-gradient(180deg, #f4fcfd 0%,  #e4f9fe 40%, #FFFFFF 100%)",
-          padding: isMobile ? "52px 16px 64px" : "40px 20px 96px",
-          position: "relative",
+          background: "#f0fafe",
+          padding: isMobile ? "72px 20px 64px" : "50px 24px 80px",
+          position: "relative", overflow: "hidden",
         }}>
-          {/* subtle dot pattern */}
+          {/* CSS grid lines */}
           <div style={{
-            position: "absolute", inset: 0,
-            backgroundImage: "radial-gradient(circle, rgba(70,196,217,.08) 1px, transparent 1px)",
-            backgroundSize: "32px 32px",
-            pointerEvents: "none",
+            position:"absolute", inset:0, pointerEvents:"none",
+            backgroundImage:"linear-gradient(rgba(16,117,173,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(16,117,173,0.06) 1px, transparent 1px)",
+            backgroundSize:"60px 60px",
+          }}/>
+          {/* Radial gradients */}
+          <div style={{
+            position:"absolute", inset:0, pointerEvents:"none",
+            background:`radial-gradient(ellipse 65% 70% at -5% 55%, rgba(70,196,217,0.22) 0%, transparent 55%),
+              radial-gradient(ellipse 55% 65% at 105% 30%, rgba(18,117,173,0.14) 0%, transparent 55%)`,
           }}/>
 
-          <div style={{ maxWidth: 1200, margin: "0 auto", textAlign: "center", position: "relative" }}>
+          <div style={{ maxWidth:1200, margin:"0 auto", textAlign:"center", position:"relative", zIndex:1 }}>
+
             {/* TRUSTED badge */}
-         
+            <div style={{
+              display:"inline-flex", alignItems:"center", gap:8,
+              background:"rgba(70,196,217,0.10)", border:"1px solid rgba(70,196,217,0.30)",
+              color:"#1275ad", fontSize:11, fontWeight:700, letterSpacing:"0.1em", textTransform:"uppercase" as const,
+              padding:"6px 16px", borderRadius:100, marginBottom:28, fontFamily:"Outfit, sans-serif",
+            }}>
+              🌐 Trusted Healthcare, Simplified
+            </div>
 
             {/* H1 */}
             <h1 style={{
-              fontSize: isMobile ? 32 : 65,
+              fontFamily:"Outfit, sans-serif",
+              fontSize: isMobile ? 32 : "clamp(2.6rem, 5.5vw, 4.5rem)",
               fontWeight: 900,
-              color: "#13527a",
-              lineHeight: 1.12,
-              marginBottom: 18,
-              marginTop: 35,
-              letterSpacing: "-1.5px",
+              color: "#071e34",
+              lineHeight: 1.06,
+              marginBottom: 20,
+              letterSpacing: "-0.03em",
             }}>
               Find{" "}
-              <span style={{
-                color: "#46c4d9",
-                textDecoration: "underline",
-                textDecorationColor: "#46c4d9",
-                textDecorationThickness: "3px",
-                textUnderlineOffset: "4px",
-              }}>
-                local care 
-              </span>
-              {" "}that <br />fits your life
+              <em style={{ fontStyle:"italic", color:"#46c4d9" }}>local care</em>
+              {" "}that <br />
+fits your life
             </h1>
 
-            <b><p style={{
-              color: "#13527a",
-              fontSize: isMobile ? 14.5 : 17,
-              marginBottom: 40,
+            <p style={{
+              color: "#3A4A5C",
+              fontSize: isMobile ? 15 : 17,
               maxWidth: 480,
-              margin: "0 auto 40px",
+              margin: "0 auto 32px",
               lineHeight: 1.7,
+              fontWeight: 400,
             }}>
-              Search thousands of verified doctors, specialists,<br/>
+              Search thousands of verified doctors, specialists,
               and clinics near you with powerful filters.
-            </p></b>
+            </p>
 
-            {/* ─── SEARCH BAR ─────────────────────────────────────────────── */}
-            {isMobile ? (
-              /* Mobile: stacked */
-              <div style={{ display:"flex", flexDirection:"column", gap:10, marginBottom:28 }}>
-                <div style={{ display:"flex", alignItems:"center", gap:8, background:"#fff", borderRadius:14, padding:"12px 16px", boxShadow:"0 4px 20px rgba(0,0,0,.08)" }}>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#46c4d9" strokeWidth="1.8" style={{ flexShrink:0, opacity:.6 }}>
-                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                    <circle cx="9" cy="7" r="4"/>
-                  </svg>
-                  <select value={heroSpecialty} onChange={e => setHeroSpecialty(e.target.value)}
-                    style={{ flex:1, border:"none", outline:"none", fontSize:13.5, color:heroSpecialty==="All"?"#7a8fa0":"#0E1C26", background:"transparent", appearance:"none", cursor:"pointer", fontFamily:"inherit" }}>
-                    <option value="All">Specialty / Procedure…</option>
-                    {["Cardiology","Dentistry","Dermatology","Family Medicine","Ophthalmology","Orthopedics","Psychiatry","Pediatrics","Urgent Care","Gastroenterology","OB-GYN","Medical Aesthetics"].map(s => <option key={s} value={s}>{s}</option>)}
-                  </select>
-                </div>
-                <div style={{ display:"flex", alignItems:"center", gap:8, background:"#fff", borderRadius:14, padding:"12px 16px", boxShadow:"0 4px 20px rgba(0,0,0,.08)" }}>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#46c4d9" strokeWidth="1.8" style={{ flexShrink:0, opacity:.6 }}>
-                    <path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z"/>
-                    <circle cx="12" cy="10" r="3"/>
-                  </svg>
-                  <input value={heroLocation} onChange={e => setHeroLocation(e.target.value)}
-                    placeholder="City or ZIP code"
-                    style={{ flex:1, border:"none", outline:"none", fontSize:13.5, color:"#0E1C26", background:"transparent", fontFamily:"inherit" }}/>
-                </div>
-                <button onClick={handleHeroSearch}
-                  style={{ background:"linear-gradient(90deg,#46c4d9,#46c4d9)", color:"#fff", border:"none", borderRadius:14, padding:"14px", fontWeight:800, fontSize:14, cursor:"pointer", fontFamily:"inherit" }}>
-                  FIND PROVIDERS
-                </button>
-              </div>
-            ) : (
-              /* Desktop: single pill row */
-              <div style={{ width: "100%", maxWidth: 1000, margin: "0 auto 36px" }}>
+            {/* ─── SEARCH TOGGLE ──────────────────────────────────────────── */}
+            <div style={{
+              display:"inline-flex", alignItems:"center",
+              background:"rgba(255,255,255,0.8)", border:"1.5px solid #D6E4EA",
+              borderRadius:100, padding:4, marginBottom:16,
+            }}>
+              <button onClick={() => setAiMode(false)}
+                style={{
+                  padding:"8px 20px", borderRadius:100,
+                  fontFamily:"Outfit, sans-serif", fontSize:13, fontWeight:600,
+                  cursor:"pointer", border:"none",
+                  background: !aiMode ? "#071e34" : "transparent",
+                  color: !aiMode ? "white" : "#7a8fa0",
+                  transition:"all .2s", display:"flex", alignItems:"center", gap:6,
+                }}>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="7"/><line x1="17" y1="17" x2="22" y2="22"/></svg>
+                Classic Search
+              </button>
+              <button onClick={() => setAiMode(true)}
+                style={{
+                  padding:"8px 20px", borderRadius:100,
+                  fontFamily:"Outfit, sans-serif", fontSize:13, fontWeight:600,
+                  cursor:"pointer", border:"none",
+                  background: aiMode ? "#071e34" : "transparent",
+                  color: aiMode ? "white" : "#7a8fa0",
+                  transition:"all .2s", display:"flex", alignItems:"center", gap:6,
+                }}>
+                ✦ AI Search
+              </button>
+            </div>
 
-                {aiMode ? (
-                  /* ── AI MODE: single natural-language input ── */
-                  <div style={{
-                    display: "grid",
-                    gridTemplateColumns: "1fr auto 118px",
-                    alignItems: "stretch",
-                    height: 76,
-                    background: "#fff",
-                    borderRadius: 999,
-                    boxShadow: "0 4px 28px rgba(0,0,0,.09)",
-                    border: "1.5px solid #46c4d9",
-                    overflow: "hidden",
+            {/* ─── SEARCH PANEL ───────────────────────────────────────────── */}
+            <div style={{ width:"100%", maxWidth:980, margin:"0 auto" }}>
+
+              {/* Classic search */}
+              {!aiMode && (
+                <div style={{
+                  background:"white",
+                  padding: isMobile ? "7px" : "7px 7px 7px 10px",
+                  boxShadow:"0 8px 48px rgba(16,117,173,0.13), 0 0 0 1px rgba(16,117,173,0.08)",
+                  display:"flex", alignItems:"center",
+                  flexDirection: isMobile ? "column" : "row",
+                  borderRadius: isMobile ? 20 : 100,
+                }}>
+
+                  {/* 1 — SPECIALTY */}
+                  <div onMouseDown={e=>e.stopPropagation()} style={{
+                    flex:1, display:"flex", alignItems:"center", gap:12, padding:"12px 22px",
+                    borderRight: isMobile ? "none" : "1px solid #D6E4EA",
+                    borderBottom: isMobile ? "1px solid #D6E4EA" : "none",
+                    position:"relative" as const,
+                    width: isMobile ? "100%" : "auto",
                   }}>
-                    {/* AI text input */}
-                    <div style={{ display:"flex", alignItems:"center", padding:"0 28px", gap:14 }}>
-                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#46c4d9" strokeWidth="1.8" style={{ flexShrink:0 }}>
-                        <path d="M12 2L9.5 9.5 2 12l7.5 2.5L12 22l2.5-7.5L22 12l-7.5-2.5z"/>
-                      </svg>
-                      <input
-                        autoFocus
-                        value={aiQuery}
-                        onChange={e => setAiQuery(e.target.value)}
-                        onKeyDown={e => e.key==="Enter" && handleHeroSearch()}
-                        placeholder="Describe your symptoms or what you need — e.g. &quot;knee pain after running, need specialist near downtown&quot;"
-                        style={{ flex:1, border:"none", outline:"none", fontSize:14, color:"#0E1C26", background:"transparent", fontFamily:"inherit", fontWeight:400 }}
-                      />
-                    </div>
-
-                    {/* SEARCH button */}
-                    <div style={{ display:"flex", alignItems:"center", padding:"8px 4px 8px 8px" }}>
-                      <button onClick={handleHeroSearch}
-                        style={{
-                          height:"100%", padding:"0 28px",
-                          background:"#46c4d9", color:"#fff", border:"none",
-                          borderRadius:999, fontWeight:800, fontSize:13.5, cursor:"pointer",
-                          display:"flex", alignItems:"center", justifyContent:"center",
-                          gap:10, letterSpacing:"0.4px",
-                          fontFamily:"inherit", transition:"background .15s",
-                          whiteSpace:"nowrap" as const,
-                        }}
-                        onMouseEnter={e=>(e.currentTarget.style.background="#1275ad")}
-                        onMouseLeave={e=>(e.currentTarget.style.background="#46c4d9")}>
-                        SEARCH
-                      </button>
-                    </div>
-
-                    {/* AI MODE toggle — active state, crescent left edge */}
-                    <button onClick={() => setAiMode(false)}
-                      style={{
-                        background:"#46c4d9", color:"#fff", border:"none",
-                        fontWeight:800, fontSize:11, cursor:"pointer", fontFamily:"inherit",
-                        display:"flex", alignItems:"center", justifyContent:"center",
-                        flexDirection:"column" as const, gap:4,
-                        letterSpacing:"1px", textTransform:"uppercase" as const,
-                        transition:"all .15s",
-                        clipPath:"path('M 0 0 Q 36 38 0 76 L 118 76 L 118 0 Z')",
-                        paddingLeft:24,
-                      }}
-                      onMouseEnter={e=>(e.currentTarget.style.opacity="0.85")}
-                      onMouseLeave={e=>(e.currentTarget.style.opacity="1")}>
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M12 2L9.5 9.5 2 12l7.5 2.5L12 22l2.5-7.5L22 12l-7.5-2.5z"/>
-                      </svg>
-                      AI MODE
-                    </button>
-                  </div>
-                ) : (
-                  /* ── STANDARD: 4-field grid ── */
-                  <div style={{
-                    display: "grid",
-                    gridTemplateColumns: "1.3fr 0.9fr 1.2fr 0.9fr auto 118px",
-                    alignItems: "stretch",
-                    height: 76,
-                    background: "#fff",
-                    borderRadius: 999,
-                    boxShadow: "0 4px 28px rgba(0,0,0,.09)",
-                    border: "1.5px solid #D6E4EA",
-                  }}>
-
-                    {/* 1 — SPECIALTY / PROCEDURE */}
-                    <div onMouseDown={e => e.stopPropagation()} className="sb-cell" style={{ display:"flex", alignItems:"center", padding:"0 18px 0 28px", gap:12, minWidth:0, position:"relative" as const }}>
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#46c4d9" strokeWidth="1.6" style={{ flexShrink:0 }}>
-                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
-                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                      </svg>
-                      <div style={{ minWidth:0, flex:1 }}>
-                        <div style={{ textAlign:"left",fontSize:10, fontWeight:700, letterSpacing:"0.4px", color:"#5d6d7a", textTransform:"uppercase" as const, marginBottom:3 }}>Specialty / Procedure</div>
-                        <div onClick={() => setOpenDropdown(openDropdown === "specialty" ? null : "specialty")} style={{ display:"flex", alignItems:"center", gap:6, cursor:"pointer" }}>
-                          <span style={{ textAlign:"left",fontSize:9, color: heroSpecialty==="All" ? "#7a8fa0" : "#13527a", fontWeight:500, flex:1, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" as const }}>
-                            {heroSpecialty === "All" ? "e.g. Dentist, MRI Scan…" : heroSpecialty}
-                          </span>
-                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#7a8fa0" strokeWidth="2.5" style={{ flexShrink:0, transition:"transform .2s", transform: openDropdown==="specialty" ? "rotate(180deg)" : "rotate(0deg)" }}>
-                            <polyline points="6,9 12,15 18,9"/>
-                          </svg>
-                        </div>
-                        {openDropdown === "specialty" && (
-                          <div style={{ position:"absolute" as const, top:"calc(100% + 10px)", left:"50%", transform:"translateX(-50%)", minWidth:150, background:"#fff", borderRadius:16, boxShadow:"0 16px 48px rgba(0,0,0,.13)", border:"1.5px solid #D6E4EA", zIndex:1000, overflow:"hidden" as const, animation:"dropFade .18s ease" }}>
-                            <div className="dd-scroll" style={{ padding:"8px 0", maxHeight:280, overflowY:"auto" as const }}>
-                              {SPECIALTIES.map(opt => (
-                                <div key={opt} className="dd-opt" onClick={() => { setHeroSpecialty(opt); setOpenDropdown(null); }}
-                                  style={{ padding:"8px 16px", fontSize:9, cursor:"pointer", display:"flex", alignItems:"center", gap:8,
-                                    color: heroSpecialty===opt ? "#46c4d9" : "#13527a",
-                                    fontWeight: heroSpecialty===opt ? 700 : 400,
-                                    background: heroSpecialty===opt ? "rgba(70,196,217,.08)" : "transparent",
-                                  }}>
-                                  {heroSpecialty===opt && <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#46c4d9" strokeWidth="3"><polyline points="20,6 9,17 4,12"/></svg>}
-                                  {opt === "All" ? "All Specialties" : opt}
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        )}
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1275ad" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink:0 }}>
+                      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+                      <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                    </svg>
+                    <div style={{ flex:1, minWidth:0 }}>
+                      <div style={{ fontFamily:"Outfit, sans-serif", fontSize:10, fontWeight:700, letterSpacing:"0.08em", textTransform:"uppercase" as const, color:"#7a8fa0", marginBottom:3 }}>Specialty / Procedure</div>
+                      <div onClick={() => setOpenDropdown(openDropdown==="specialty" ? null : "specialty")}
+                        style={{ display:"flex", alignItems:"center", gap:6, cursor:"pointer" }}>
+                        <span style={{ fontSize:14, fontWeight:500, color:heroSpecialty==="All"?"#a8bfcc":"#0E1C26", flex:1, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" as const }}>
+                          {heroSpecialty==="All" ? "e.g. Dentist, Cardiology…" : heroSpecialty}
+                        </span>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#7a8fa0" strokeWidth="2.5" style={{ flexShrink:0, transition:"transform .2s", transform:openDropdown==="specialty"?"rotate(180deg)":"none" }}><polyline points="6,9 12,15 18,9"/></svg>
                       </div>
-                    </div>
-
-                    {/* 2 — LOCATION */}
-                    <div className="sb-cell" style={{ display:"flex", alignItems:"center", padding:"0 18px", gap:12, minWidth:0, position:"relative" as const }}>
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#46c4d9" strokeWidth="1.8" style={{ flexShrink:0 }}>
-                        <path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z"/>
-                        <circle cx="12" cy="10" r="3"/>
-                      </svg>
-                      <div style={{ minWidth:0, flex:1 }}>
-                        <div style={{ textAlign:"left",fontSize:10, fontWeight:700, letterSpacing:"0.4px", color:"#5d6d7a", textTransform:"uppercase" as const, marginBottom:-6 }}>Location</div>
-                        <input value={heroLocation} onChange={e => setHeroLocation(e.target.value)} onKeyDown={e => e.key==="Enter" && handleHeroSearch()}
-                          placeholder="Richmond Hill, ON"
-                          style={{ background:"transparent", border:"none", outline:"none", fontSize:9, color:"#13527a", width:"100%", fontFamily:"inherit", fontWeight:500 }}/>
-                      </div>
-                    </div>
-
-                    {/* 3 — INSURANCE */}
-                    <div onMouseDown={e => e.stopPropagation()} className="sb-cell" style={{ display:"flex", alignItems:"center", padding:"0 18px", gap:12, minWidth:0, position:"relative" as const }}>
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#46c4d9" strokeWidth="1.8" style={{ flexShrink:0 }}>
-                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                      </svg>
-                      <div style={{ minWidth:0, flex:1 }}>
-                        <div style={{ textAlign:"left",fontSize:10, fontWeight:700, letterSpacing:"0.4px", color:"#5d6d7a", textTransform:"uppercase" as const, marginBottom:3 }}>Insurance (Optional)</div>
-                        <div onClick={() => setOpenDropdown(openDropdown === "insurance" ? null : "insurance")} style={{ display:"flex", alignItems:"center", gap:6, cursor:"pointer" }}>
-                          <span style={{ textAlign:"left",fontSize:9, color: heroInsurance==="All" ? "#7a8fa0" : "#13527a", fontWeight:500, flex:1, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" as const }}>
-                            {heroInsurance === "All" ? "Select your plan…" : heroInsurance}
-                          </span>
-                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#7a8fa0" strokeWidth="2.5" style={{ flexShrink:0, transition:"transform .2s", transform: openDropdown==="insurance" ? "rotate(180deg)" : "rotate(0deg)" }}>
-                            <polyline points="6,9 12,15 18,9"/>
-                          </svg>
-                        </div>
-                        {openDropdown === "insurance" && (
-                          <div style={{ position:"absolute" as const, top:"calc(100% + 10px)", left:0, minWidth:180, background:"#fff", borderRadius:16, boxShadow:"0 16px 48px rgba(0,0,0,.13)", border:"1.5px solid #D6E4EA", zIndex:1000, overflow:"hidden" as const, animation:"dropFade .18s ease" }}>
-                            <div className="dd-scroll" style={{ padding:"8px 0", maxHeight:300, overflowY:"auto" as const }}>
-                              <div className="dd-opt" onClick={() => { setHeroInsurance("All"); setHeroInsExp(null); setOpenDropdown(null); }}
-                                style={{ padding:"8px 16px", fontSize:9, cursor:"pointer", display:"flex", alignItems:"center", gap:8, color: heroInsurance==="All"?"#46c4d9":"#0E1C26", fontWeight: heroInsurance==="All"?700:400, background: heroInsurance==="All"?"rgba(70,196,217,.08)":"transparent" }}>
-                                {heroInsurance==="All" && <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#46c4d9" strokeWidth="3"><polyline points="20,6 9,17 4,12"/></svg>}
-                                Any Insurance
+                      {openDropdown==="specialty" && (
+                        <div style={{ position:"absolute" as const, top:"calc(100% + 8px)", left:0, minWidth:180, background:"#fff", borderRadius:16, boxShadow:"0 16px 48px rgba(0,0,0,.13)", border:"1.5px solid #D6E4EA", zIndex:1000, overflow:"hidden" as const, animation:"dropFade .18s ease" }}>
+                          <div className="dd-scroll" style={{ padding:"8px 0", maxHeight:280, overflowY:"auto" as const }}>
+                            {SPECIALTIES.map(opt => (
+                              <div key={opt} className="dd-opt" onClick={() => { setHeroSpecialty(opt); setOpenDropdown(null); }}
+                                style={{ padding:"9px 16px", fontSize:13, cursor:"pointer", display:"flex", alignItems:"center", gap:8, color:heroSpecialty===opt?"#46c4d9":"#0E1C26", fontWeight:heroSpecialty===opt?700:400, background:heroSpecialty===opt?"rgba(70,196,217,.08)":"transparent" }}>
+                                {heroSpecialty===opt && <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#46c4d9" strokeWidth="3"><polyline points="20,6 9,17 4,12"/></svg>}
+                                {opt==="All" ? "All Specialties" : opt}
                               </div>
-                              {INSURANCE_CARRIERS.map(c => {
-                                const carrierActive = heroInsurance===c.name || c.plans.includes(heroInsurance);
-                                const expanded = heroInsExp === c.name;
-                                return (
-                                  <div key={c.name}>
-                                    <div onClick={() => setHeroInsExp(expanded ? null : c.name)}
-                                      style={{ padding:"8px 16px", fontSize:9, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"space-between", gap:8,
-                                        color: carrierActive ? "#46c4d9" : "#0E1C26", fontWeight:600,
-                                        background: carrierActive ? "rgba(70,196,217,.06)" : "transparent" }}>
-                                      <span style={{ display:"flex", alignItems:"center", gap:8 }}>
-                                        {carrierActive && <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#46c4d9" strokeWidth="3"><polyline points="20,6 9,17 4,12"/></svg>}
-                                        {c.name}
-                                      </span>
-                                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#7a8fa0" strokeWidth="2.5" style={{ flexShrink:0, transition:"transform .15s", transform: expanded?"rotate(180deg)":"rotate(0deg)" }}><polyline points="6,9 12,15 18,9"/></svg>
-                                    </div>
-                                    {expanded && c.plans.map(plan => (
-                                      <div key={plan} className="dd-opt" onClick={() => { setHeroInsurance(plan); setOpenDropdown(null); }}
-                                        style={{ padding:"7px 16px 7px 30px", fontSize:9, cursor:"pointer", display:"flex", alignItems:"center", gap:8,
-                                          color: heroInsurance===plan?"#46c4d9":"#7a8fa0", fontWeight: heroInsurance===plan?700:400,
-                                          background: heroInsurance===plan?"rgba(70,196,217,.08)":"transparent" }}>
-                                        {heroInsurance===plan && <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#46c4d9" strokeWidth="3"><polyline points="20,6 9,17 4,12"/></svg>}
-                                        {plan}
-                                      </div>
-                                    ))}
-                                  </div>
-                                );
-                              })}
-                            </div>
+                            ))}
                           </div>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* 4 — MIN RATING */}
-                    <div onMouseDown={e => e.stopPropagation()} style={{ display:"flex", alignItems:"center", padding:"0 20px", gap:12, position:"relative" as const }}>
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#46c4d9" strokeWidth="1.8" style={{ flexShrink:0 }}>
-                        <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
-                      </svg>
-                      <div style={{ minWidth:0 }}>
-                        <div style={{ textAlign:"left",fontSize:10, fontWeight:700, letterSpacing:"0.4px", color:"#5d6d7a", textTransform:"uppercase" as const, marginBottom:3 }}>Min Rating</div>
-                        <div onClick={() => setOpenDropdown(openDropdown === "rating" ? null : "rating")} style={{ display:"flex", alignItems:"center", gap:6, cursor:"pointer" }}>
-                          <span style={{ textAlign:"left",fontSize:9, color: heroRating==="Any" ? "#7a8fa0" : "#13527a", fontWeight:500, whiteSpace:"nowrap" as const }}>
-                            {RATINGS.find(r => r.val === heroRating)?.label ?? "Any Rating"}
-                          </span>
-                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#7a8fa0" strokeWidth="2.5" style={{ flexShrink:0, transition:"transform .2s", transform: openDropdown==="rating" ? "rotate(180deg)" : "rotate(0deg)" }}>
-                            <polyline points="6,9 12,15 18,9"/>
-                          </svg>
                         </div>
-                        {openDropdown === "rating" && (
-                          <div style={{ position:"absolute" as const, top:"calc(100% + 10px)", left:0, minWidth:140, background:"#fff", borderRadius:16, boxShadow:"0 16px 48px rgba(0,0,0,.13)", border:"1.5px solid #D6E4EA", zIndex:1000, overflow:"hidden" as const, animation:"dropFade .18s ease" }}>
-                            <div className="dd-scroll" style={{ padding:"8px 0" }}>
-                              {RATINGS.map(r => (
-                                <div key={r.val} className="dd-opt" onClick={() => { setHeroRating(r.val); setOpenDropdown(null); }}
-                                  style={{ padding:"8px 16px", fontSize:9, cursor:"pointer", display:"flex", alignItems:"center", gap:8,
-                                    color: heroRating===r.val ? "#46c4d9" : "#0E1C26",
-                                    fontWeight: heroRating===r.val ? 700 : 400,
-                                    background: heroRating===r.val ? "rgba(70,196,217,.08)" : "transparent",
-                                  }}>
-                                  {heroRating===r.val && <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#46c4d9" strokeWidth="3"><polyline points="20,6 9,17 4,12"/></svg>}
-                                  {r.label}
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-                      </div>
+                      )}
                     </div>
-
-                    {/* 5 — FIND PROVIDERS */}
-                    <div style={{ display:"flex", alignItems:"center", padding:"8px 4px 8px 8px" }}>
-                      <button onClick={handleHeroSearch}
-                        style={{
-                          height:"100%", padding:"0 28px",
-                          background:"#46c4d9", color:"#fff", border:"none",
-                          borderRadius:999, fontWeight:800, fontSize:13.5, cursor:"pointer",
-                          display:"flex", alignItems:"center", justifyContent:"center",
-                          letterSpacing:"0.4px", fontFamily:"inherit", transition:"background .15s",
-                          whiteSpace:"nowrap" as const,
-                          maxWidth:140
-                        }}
-                        onMouseEnter={e=>(e.currentTarget.style.background="#1275ad")}
-                        onMouseLeave={e=>(e.currentTarget.style.background="#46c4d9")}>
-                        FIND PROVIDERS
-                      </button>
-                    </div>
-
-                    {/* 6 — AI MODE */}
-                    <button onClick={() => setAiMode(true)}
-                      style={{
-                        background:"#3084b8", color:"#fff", border:"none",
-                        fontWeight:800, fontSize:11, cursor:"pointer", fontFamily:"inherit",
-                        display:"flex", alignItems:"center", justifyContent:"center",
-                        flexDirection:"column" as const, gap:4,
-                        letterSpacing:"1px", textTransform:"uppercase" as const,
-                        transition:"opacity .15s",
-                        clipPath:"path('M 0 0 Q 36 38 0 76 L 118 76 L 118 0 Z')",
-                        borderRadius:"0 999px 999px 0",
-                        paddingLeft:24,
-                      }}
-                      onMouseEnter={e=>(e.currentTarget.style.opacity="0.85")}
-                      onMouseLeave={e=>(e.currentTarget.style.opacity="1")}>
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M12 2L9.5 9.5 2 12l7.5 2.5L12 22l2.5-7.5L22 12l-7.5-2.5z"/>
-                      </svg>
-                      AI MODE
-                    </button>
-
                   </div>
-                )}
-              </div>
-            )}
+
+                  {/* 2 — LOCATION */}
+                  <div style={{
+                    flex:1, display:"flex", alignItems:"center", gap:12, padding:"12px 22px",
+                    borderRight: isMobile ? "none" : "1px solid #D6E4EA",
+                    borderBottom: isMobile ? "1px solid #D6E4EA" : "none",
+                    width: isMobile ? "100%" : "auto",
+                  }}>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1275ad" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink:0 }}>
+                      <path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z"/>
+                      <circle cx="12" cy="10" r="3"/>
+                    </svg>
+                    <div style={{ flex:1 }}>
+                      <div style={{ fontFamily:"Outfit, sans-serif", fontSize:10, fontWeight:700, letterSpacing:"0.08em", textTransform:"uppercase" as const, color:"#7a8fa0", marginBottom:3 }}>Location</div>
+                      <input value={heroLocation} onChange={e=>setHeroLocation(e.target.value)} onKeyDown={e=>e.key==="Enter"&&handleHeroSearch()}
+                        placeholder="City, ZIP, or neighbourhood"
+                        style={{ border:"none", outline:"none", fontSize:14, fontWeight:500, color:heroLocation?"#0E1C26":"#a8bfcc", fontFamily:"inherit", background:"transparent", width:"100%" }}/>
+                    </div>
+                  </div>
+
+                  {/* 3 — INSURANCE */}
+                  <div onMouseDown={e=>e.stopPropagation()} style={{
+                    flex:1, display:"flex", alignItems:"center", gap:12, padding:"12px 22px",
+                    borderRight: isMobile ? "none" : "1px solid #D6E4EA",
+                    borderBottom: isMobile ? "1px solid #D6E4EA" : "none",
+                    position:"relative" as const,
+                    width: isMobile ? "100%" : "auto",
+                  }}>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1275ad" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink:0 }}>
+                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    </svg>
+                    <div style={{ flex:1, minWidth:0 }}>
+                      <div style={{ fontFamily:"Outfit, sans-serif", fontSize:10, fontWeight:700, letterSpacing:"0.08em", textTransform:"uppercase" as const, color:"#7a8fa0", marginBottom:3 }}>Insurance (Optional)</div>
+                      <div onClick={() => setOpenDropdown(openDropdown==="insurance" ? null : "insurance")}
+                        style={{ display:"flex", alignItems:"center", gap:6, cursor:"pointer" }}>
+                        <span style={{ fontSize:14, fontWeight:500, color:heroInsurance==="All"?"#a8bfcc":"#0E1C26", flex:1, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" as const }}>
+                          {heroInsurance==="All" ? "Select your plan…" : heroInsurance}
+                        </span>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#7a8fa0" strokeWidth="2.5" style={{ flexShrink:0, transition:"transform .2s", transform:openDropdown==="insurance"?"rotate(180deg)":"none" }}><polyline points="6,9 12,15 18,9"/></svg>
+                      </div>
+                      {openDropdown==="insurance" && (
+                        <div style={{ position:"absolute" as const, top:"calc(100% + 8px)", left:0, minWidth:200, background:"#fff", borderRadius:16, boxShadow:"0 16px 48px rgba(0,0,0,.13)", border:"1.5px solid #D6E4EA", zIndex:1000, overflow:"hidden" as const, animation:"dropFade .18s ease" }}>
+                          <div className="dd-scroll" style={{ padding:"8px 0", maxHeight:300, overflowY:"auto" as const }}>
+                            <div className="dd-opt" onClick={() => { setHeroInsurance("All"); setHeroInsExp(null); setOpenDropdown(null); }}
+                              style={{ padding:"9px 16px", fontSize:13, cursor:"pointer", display:"flex", alignItems:"center", gap:8, color:heroInsurance==="All"?"#46c4d9":"#0E1C26", fontWeight:heroInsurance==="All"?700:400, background:heroInsurance==="All"?"rgba(70,196,217,.08)":"transparent" }}>
+                              {heroInsurance==="All" && <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#46c4d9" strokeWidth="3"><polyline points="20,6 9,17 4,12"/></svg>}
+                              Any Insurance
+                            </div>
+                            {INSURANCE_CARRIERS.map(c => {
+                              const carrierActive = heroInsurance===c.name || c.plans.includes(heroInsurance);
+                              const expanded = heroInsExp===c.name;
+                              return (
+                                <div key={c.name}>
+                                  <div onClick={() => setHeroInsExp(expanded ? null : c.name)}
+                                    style={{ padding:"9px 16px", fontSize:13, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"space-between", gap:8, color:carrierActive?"#46c4d9":"#0E1C26", fontWeight:600, background:carrierActive?"rgba(70,196,217,.06)":"transparent" }}>
+                                    <span style={{ display:"flex", alignItems:"center", gap:8 }}>
+                                      {carrierActive && <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#46c4d9" strokeWidth="3"><polyline points="20,6 9,17 4,12"/></svg>}
+                                      {c.name}
+                                    </span>
+                                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#7a8fa0" strokeWidth="2.5" style={{ flexShrink:0, transition:"transform .15s", transform:expanded?"rotate(180deg)":"none" }}><polyline points="6,9 12,15 18,9"/></svg>
+                                  </div>
+                                  {expanded && c.plans.map(plan => (
+                                    <div key={plan} className="dd-opt" onClick={() => { setHeroInsurance(plan); setOpenDropdown(null); }}
+                                      style={{ padding:"8px 16px 8px 32px", fontSize:12, cursor:"pointer", display:"flex", alignItems:"center", gap:8, color:heroInsurance===plan?"#46c4d9":"#7a8fa0", fontWeight:heroInsurance===plan?700:400, background:heroInsurance===plan?"rgba(70,196,217,.08)":"transparent" }}>
+                                      {heroInsurance===plan && <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#46c4d9" strokeWidth="3"><polyline points="20,6 9,17 4,12"/></svg>}
+                                      {plan}
+                                    </div>
+                                  ))}
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* 4 — MIN RATING */}
+                  <div onMouseDown={e=>e.stopPropagation()} style={{
+                    display:"flex", alignItems:"center", gap:12, padding:"12px 22px",
+                    position:"relative" as const,
+                    width: isMobile ? "100%" : "auto",
+                  }}>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1275ad" strokeWidth="1.8" style={{ flexShrink:0 }}>
+                      <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
+                    </svg>
+                    <div style={{ minWidth:0 }}>
+                      <div style={{ fontFamily:"Outfit, sans-serif", fontSize:10, fontWeight:700, letterSpacing:"0.08em", textTransform:"uppercase" as const, color:"#7a8fa0", marginBottom:3 }}>Min Rating</div>
+                      <div onClick={() => setOpenDropdown(openDropdown==="rating" ? null : "rating")}
+                        style={{ display:"flex", alignItems:"center", gap:6, cursor:"pointer" }}>
+                        <span style={{ fontSize:14, fontWeight:500, color:heroRating==="Any"?"#a8bfcc":"#0E1C26", whiteSpace:"nowrap" as const }}>
+                          {RATINGS.find(r=>r.val===heroRating)?.label ?? "Any Rating"}
+                        </span>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#7a8fa0" strokeWidth="2.5" style={{ flexShrink:0, transition:"transform .2s", transform:openDropdown==="rating"?"rotate(180deg)":"none" }}><polyline points="6,9 12,15 18,9"/></svg>
+                      </div>
+                      {openDropdown==="rating" && (
+                        <div style={{ position:"absolute" as const, top:"calc(100% + 8px)", left:0, minWidth:140, background:"#fff", borderRadius:16, boxShadow:"0 16px 48px rgba(0,0,0,.13)", border:"1.5px solid #D6E4EA", zIndex:1000, overflow:"hidden" as const, animation:"dropFade .18s ease" }}>
+                          <div className="dd-scroll" style={{ padding:"8px 0" }}>
+                            {RATINGS.map(r => (
+                              <div key={r.val} className="dd-opt" onClick={() => { setHeroRating(r.val); setOpenDropdown(null); }}
+                                style={{ padding:"9px 16px", fontSize:13, cursor:"pointer", display:"flex", alignItems:"center", gap:8, color:heroRating===r.val?"#46c4d9":"#0E1C26", fontWeight:heroRating===r.val?700:400, background:heroRating===r.val?"rgba(70,196,217,.08)":"transparent" }}>
+                                {heroRating===r.val && <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#46c4d9" strokeWidth="3"><polyline points="20,6 9,17 4,12"/></svg>}
+                                {r.label}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Find Providers button */}
+                  <button onClick={handleHeroSearch}
+                    style={{
+                      background:"#46c4d9", color:"white", border:"none",
+                      borderRadius: isMobile ? 12 : 100, padding:"14px 28px",
+                      fontFamily:"Outfit, sans-serif", fontSize:14, fontWeight:700, cursor:"pointer",
+                      display:"flex", alignItems:"center", gap:8, flexShrink:0, whiteSpace:"nowrap" as const,
+                      width: isMobile ? "100%" : "auto", justifyContent:"center",
+                      transition:"opacity .2s", marginTop: isMobile ? 4 : 0,
+                    }}
+                    onMouseEnter={e=>(e.currentTarget as HTMLButtonElement).style.opacity="0.88"}
+                    onMouseLeave={e=>(e.currentTarget as HTMLButtonElement).style.opacity="1"}>
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="7"/><line x1="17" y1="17" x2="22" y2="22"/></svg>
+                    Find Providers
+                  </button>
+                </div>
+              )}
+
+              {/* AI Search */}
+              {aiMode && (
+                <div style={{ background:"white", borderRadius:24, padding:"20px 24px", boxShadow:"0 8px 48px rgba(16,117,173,0.13), 0 0 0 1px rgba(16,117,173,0.08)" }}>
+                  <div style={{ fontFamily:"Outfit, sans-serif", fontSize:11, fontWeight:700, letterSpacing:"0.1em", textTransform:"uppercase" as const, color:"#1275ad", marginBottom:10, display:"flex", alignItems:"center", gap:6 }}>
+                    ✦ Describe what you&apos;re looking for in plain language
+                  </div>
+                  <div style={{ display:"flex", gap:10, alignItems:"flex-end" }}>
+                    <textarea value={aiQuery} onChange={e=>setAiQuery(e.target.value)} autoFocus
+                      onKeyDown={e=>{ if(e.key==="Enter"&&!e.shiftKey){ e.preventDefault(); handleHeroSearch(); } }}
+                      placeholder="e.g. I need a cardiologist near downtown who accepts Aetna and has availability this week…"
+                      rows={2}
+                      style={{ flex:1, border:"1.5px solid #D6E4EA", borderRadius:12, padding:"14px 18px", fontFamily:"inherit", fontSize:14, color:"#0E1C26", resize:"none", outline:"none", lineHeight:1.55, minHeight:56, boxSizing:"border-box" as const, transition:"border-color .2s" }}
+                      onFocus={e=>e.target.style.borderColor="#46c4d9"}
+                      onBlur={e=>e.target.style.borderColor="#D6E4EA"} />
+                    <button onClick={handleHeroSearch}
+                      style={{ background:"linear-gradient(135deg,#46c4d9,#1275ad)", color:"white", border:"none", borderRadius:12, padding:"14px 22px", fontFamily:"Outfit, sans-serif", fontSize:14, fontWeight:700, cursor:"pointer", display:"flex", alignItems:"center", gap:7, whiteSpace:"nowrap" as const, transition:"opacity .2s" }}>
+                      ✦ Search with AI
+                    </button>
+                  </div>
+                  <div style={{ display:"flex", flexWrap:"wrap", gap:8, marginTop:12 }}>
+                    {["Cardiologist near downtown","Family doctor accepting new patients","Dentist open on weekends","Dermatologist with 4.5+ stars","Psychiatrist accepting Medicaid"].map(s => (
+                      <span key={s} onClick={()=>setAiQuery(s)}
+                        style={{ fontSize:12, color:"#1275ad", background:"rgba(18,117,173,0.06)", border:"1px solid rgba(18,117,173,0.15)", borderRadius:100, padding:"5px 13px", cursor:"pointer", fontWeight:500, transition:"all .18s" }}
+                        onMouseEnter={e=>{(e.currentTarget as HTMLSpanElement).style.background="#1275ad";(e.currentTarget as HTMLSpanElement).style.color="white";}}
+                        onMouseLeave={e=>{(e.currentTarget as HTMLSpanElement).style.background="rgba(18,117,173,0.06)";(e.currentTarget as HTMLSpanElement).style.color="#1275ad";}}>
+                        {s}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
 
             {/* Stats row */}
-            <div style={{ display:"flex", gap:isMobile?20:0, justifyContent:"center", flexWrap:"wrap", alignItems:"center" }}>
-              {[{n:"1,000+",l:"Insurance plans"},{n:"1.6M+",l:"Providers"},{n:"10M+",l:"Reviews analyzed"}].map((s,i) => (
-                <div key={s.n} style={{ display:"flex", alignItems:"center" }}>
-                  {i > 0 && !isMobile && <span style={{ width:1, height:30, background:"rgba(70,196,217,.25)", display:"block", margin:"0 36px" }}/>}
+            <div style={{ display:"flex", gap:isMobile?24:40, justifyContent:"center", flexWrap:"wrap", alignItems:"center", marginTop:36 }}>
+              {[{n:"1,000+",l:"Insurance plans"},{n:"1.6M+",l:"Providers"},{n:"10M+",l:"Reviews analyzed"}].map((s,i,arr) => (
+                <div key={s.n} style={{ display:"flex", alignItems:"center", gap:isMobile?24:40 }}>
                   <div style={{ textAlign:"center" }}>
-                    <div style={{ fontSize:isMobile?18:22, fontWeight:900, color:"#46c4d9", lineHeight:1 }}>{s.n}</div>
-                    <div style={{ fontSize:11.5, color:"#6B8FA0", marginTop:4, fontWeight:500 }}>{s.l}</div>
+                    <div style={{ fontFamily:"Outfit, sans-serif", fontWeight:800, fontSize:isMobile?22:26, color:"#071e34", lineHeight:1, letterSpacing:"-0.03em" }}>{s.n}</div>
+                    <div style={{ fontSize:11.5, color:"#7a8fa0", marginTop:4, fontWeight:500 }}>{s.l}</div>
                   </div>
+                  {i < arr.length-1 && !isMobile && <div style={{ width:1, height:36, background:"#D6E4EA" }}/>}
                 </div>
               ))}
             </div>
@@ -598,14 +550,14 @@ export default function FindLocalCarePage() {
 
         {/* ─── TOP CLINICS ──────────────────────────────────────────────────── */}
         {!showResults && (
-          <div style={{ background:"#fff", padding:isMobile?"36px 16px":"56px 20px", borderBottom:"1px solid #EEF3F5" }}>
+          <div style={{ background:"#fff", padding:isMobile?"64px 16px":"88px 48px", borderBottom:"1px solid #EEF3F5" }}>
             <div style={{ maxWidth:1200, margin:"0 auto" }}>
               <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:28, flexWrap:"wrap", gap:12 }}>
                 <div>
-                  <div style={{ fontSize:13.5, fontWeight:800, letterSpacing:"0px", color:"#46c4d9", textTransform:"uppercase" as const, marginBottom:0}}>TOP CLINICS</div>
-                  <h2 style={{ fontSize:isMobile?22:32, fontWeight:900, margin:0, color:"#13527a" }}>
+                  <div style={{ fontFamily:"Outfit, sans-serif", fontSize:11, fontWeight:700, letterSpacing:"0.14em", textTransform:"uppercase" as const, color:C.blue, marginBottom:8 }}>Top-Rated Local Providers</div>
+                  <h2 style={{ fontFamily:"Outfit, sans-serif", fontSize:isMobile?22:32, fontWeight:700, margin:0, color:"#071e34", letterSpacing:"-0.02em" }}>
                     Highly-rated{" "}
-                    <span style={{ color:"#46c4d9", textDecoration:"underline", textDecorationColor:"#46c4d9" }}>clinics</span>
+                    <em style={{ fontStyle:"italic", color:C.blue }}>clinics</em>
                     {" "}near you
                   </h2>
                 </div>
@@ -635,13 +587,13 @@ export default function FindLocalCarePage() {
                       <div style={{ fontWeight:700, fontSize:13.5, marginBottom:6, color:"#0E1C26", lineHeight:1.3 }}>{p.name}</div>
                       <div style={{ display:"flex", alignItems:"center", gap:3, marginBottom:8 }}>
                         {[1,2,3,4,5].map(star => (
-                          <svg key={star} width="11" height="11" viewBox="0 0 24 24" fill={star <= Math.round(p.rating) ? "#e29926" : "#D6E4EA"} stroke="none"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+                          <svg key={star} width="11" height="11" viewBox="0 0 24 24" fill={star <= Math.round(p.rating) ? "#f0c840" : "#D6E4EA"} stroke="none"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
                         ))}
                         <span style={{ fontSize:11.5, fontWeight:700, color:"#0E1C26", marginLeft:3 }}>{p.rating}</span>
                         <span style={{ fontSize:11, color:"#7a8fa0" }}>({p.reviews})</span>
                       </div>
                       <div style={{ display:"flex", gap:5, flexWrap:"wrap", marginBottom:10 }}>
-                        {p.tags.slice(0,2).map(t => <span key={t} style={{ background:"rgba(70,196,217,.1)", color:"#46c4d9", fontSize:10, fontWeight:600, padding:"2px 8px", borderRadius:10 }}>{t}</span>)}
+                        {p.tags.slice(0,2).map(t => <span key={t} style={{ background:"rgba(18,117,173,0.07)", color:C.blue, fontSize:10, fontWeight:600, padding:"2px 8px", borderRadius:10, border:"1px solid rgba(18,117,173,0.15)" }}>{t}</span>)}
                       </div>
                       <div style={{ display:"flex", alignItems:"center", gap:5, fontSize:11.5, color:"#7a8fa0" }}>
                         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#46c4d9" strokeWidth="2.5"><path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z"/><circle cx="12" cy="10" r="3"/></svg>
@@ -656,7 +608,7 @@ export default function FindLocalCarePage() {
         )}
 
         {/* ─── MAIN CONTENT ─────────────────────────────────────────────────── */}
-        <div style={{ maxWidth:1200, margin:"0 auto", padding:isMobile?"32px 16px":"52px 20px 0" }}>
+        <div style={{ maxWidth:1200, margin:"0 auto", padding:isMobile?"64px 16px":"88px 48px 0" }}>
 
           {/* ── SPECIALTIES & PROCEDURES (always visible unless showing results) ── */}
           {!showResults && (
@@ -670,13 +622,13 @@ export default function FindLocalCarePage() {
                   alignItems: "start",
                 }}>
                   {/* LEFT: Specialties */}
-                  <div style={{ paddingRight: isMobile ? 0 : 48 }}>
-                    <div style={{ fontSize:13.5, fontWeight:800, letterSpacing:"0px", color:"#46c4d9", textTransform:"uppercase" as const, marginBottom:0 }}>
-                      EXPLORE
+                  <div style={{ paddingRight: isMobile ? 0 : 48, margin: "0px 0px 45px" }}>
+                    <div style={{ fontFamily:"Outfit, sans-serif", fontSize:11, fontWeight:700, letterSpacing:"0.14em", textTransform:"uppercase" as const, color:C.blue, marginBottom:8 }}>
+                      Browse by Specialty
                     </div>
-                    <h2 style={{ fontSize:isMobile?20:26, fontWeight:900, marginBottom:24, color:"#13527a", lineHeight:1.2 }}>
+                    <h2 style={{ fontFamily:"Outfit, sans-serif", fontSize:isMobile?20:26, fontWeight:700, marginBottom:24, color:"#071e34", lineHeight:1.2, letterSpacing:"-0.02em" }}>
                       Most popular{" "}
-                      <span style={{ textDecoration:"underline", textDecorationColor:"#46c4d9", color:"#46c4d9" }}>specialties</span>
+                      <em style={{ fontStyle:"italic", color:C.blue }}>specialties</em>
                     </h2>
                     <div style={{ display:"flex", flexWrap:"wrap", gap:9 }}>
                       {SPECIALTY_CHIPS.map(chip => (
@@ -684,19 +636,17 @@ export default function FindLocalCarePage() {
                           key={chip.name}
                           onClick={() => { setSpecialty(chip.name); setShowResults(true); }}
                           style={{
-                            display: "flex", alignItems: "center", gap: 6,
-                            padding: "7px 13px",
-                            border: "1.5px solid #D6E4EA",
-                            borderRadius: 50,
-                            background: "#fff",
-                            cursor: "pointer", fontFamily: "inherit",
-                            transition: "all .15s",
+                            display:"flex", alignItems:"center", gap:7,
+                            padding:"8px 14px", borderRadius:100,
+                            border:`1.5px solid ${C.borderLt}`, background:"white",
+                            cursor:"pointer", fontFamily:"inherit",
+                            fontSize:13, fontWeight:600, color:C.text, transition:"all .2s",
                           }}
-                          onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.borderColor="#46c4d9"; (e.currentTarget as HTMLButtonElement).style.background="rgba(70,196,217,.07)"; }}
-                          onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.borderColor="#D6E4EA"; (e.currentTarget as HTMLButtonElement).style.background="#fff"; }}>
+                          onMouseEnter={e=>{const b=e.currentTarget as HTMLButtonElement;b.style.background=C.teal;b.style.color="white";b.style.borderColor=C.teal;const s=b.querySelector("svg");if(s)s.setAttribute("stroke","white");}}
+                          onMouseLeave={e=>{const b=e.currentTarget as HTMLButtonElement;b.style.background="white";b.style.color=C.text;b.style.borderColor=C.borderLt;const s=b.querySelector("svg");if(s)s.setAttribute("stroke","#46c4d9");}}>
                           {chip.icon}
-                          <span style={{ fontSize:12.5, fontWeight:600, color:"#0E1C26" }}>{chip.name}</span>
-                          <span style={{ fontSize:10.5, color:"#7a8fa0", background:"#F0F3F5", padding:"1px 7px", borderRadius:10, fontWeight:600 }}>{chip.count}</span>
+                          {chip.name}
+                          <span style={{ fontSize:11, fontWeight:600, background:"rgba(0,0,0,0.07)", padding:"2px 8px", borderRadius:100 }}>{chip.count}</span>
                         </button>
                       ))}
                     </div>
@@ -706,13 +656,13 @@ export default function FindLocalCarePage() {
                   {!isMobile && <div style={{ background:"#D6E4EA", alignSelf:"stretch" }}/>}
 
                   {/* RIGHT: Procedures */}
-                  <div style={{ paddingLeft: isMobile ? 0 : 48 }}>
-                    <div style={{ fontSize:13.5, fontWeight:800, letterSpacing:"0px", color:"#46c4d9", textTransform:"uppercase" as const, marginBottom:0 }}>
-                      EXPLORE
+                  <div style={{ paddingLeft: isMobile ? 0 : 48, margin: "0px 0px 20px" }}>
+                    <div style={{ fontFamily:"Outfit, sans-serif", fontSize:11, fontWeight:700, letterSpacing:"0.14em", textTransform:"uppercase" as const, color:C.blue, marginBottom:8 }}>
+                      Browse by Procedure
                     </div>
-                    <h2 style={{ fontSize:isMobile?20:26, fontWeight:900, marginBottom:24, color:"#13527a", lineHeight:1.2 }}>
+                    <h2 style={{ fontFamily:"Outfit, sans-serif", fontSize:isMobile?20:26, fontWeight:700, marginBottom:24, color:"#071e34", lineHeight:1.2, letterSpacing:"-0.02em" }}>
                       Most popular{" "}
-                      <span style={{ textDecoration:"underline", textDecorationColor:"#46c4d9", color:"#46c4d9" }}>procedures</span>
+                      <em style={{ fontStyle:"italic", color:C.blue }}>procedures</em>
                     </h2>
                     <div style={{ display:"flex", flexWrap:"wrap", gap:9 }}>
                       {PROCEDURE_CHIPS.map(chip => (
@@ -720,19 +670,17 @@ export default function FindLocalCarePage() {
                           key={chip.name}
                           onClick={() => { setSearchQuery(chip.name); setShowResults(true); }}
                           style={{
-                            display: "flex", alignItems: "center", gap: 6,
-                            padding: "7px 13px",
-                            border: "1.5px solid #D6E4EA",
-                            borderRadius: 50,
-                            background: "#fff",
-                            cursor: "pointer", fontFamily: "inherit",
-                            transition: "all .15s",
+                            display:"flex", alignItems:"center", gap:7,
+                            padding:"8px 14px", borderRadius:100,
+                            border:`1.5px solid ${C.borderLt}`, background:"white",
+                            cursor:"pointer", fontFamily:"inherit",
+                            fontSize:13, fontWeight:600, color:C.text, transition:"all .2s",
                           }}
-                          onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.borderColor="#46c4d9"; (e.currentTarget as HTMLButtonElement).style.background="rgba(70,196,217,.07)"; }}
-                          onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.borderColor="#D6E4EA"; (e.currentTarget as HTMLButtonElement).style.background="#fff"; }}>
+                          onMouseEnter={e=>{const b=e.currentTarget as HTMLButtonElement;b.style.background=C.teal;b.style.color="white";b.style.borderColor=C.teal;const s=b.querySelector("svg");if(s)s.setAttribute("stroke","white");}}
+                          onMouseLeave={e=>{const b=e.currentTarget as HTMLButtonElement;b.style.background="white";b.style.color=C.text;b.style.borderColor=C.borderLt;const s=b.querySelector("svg");if(s)s.setAttribute("stroke","#46c4d9");}}>
                           {chip.icon}
-                          <span style={{ fontSize:12.5, fontWeight:600, color:"#0E1C26" }}>{chip.name}</span>
-                          <span style={{ fontSize:10.5, color:"#7a8fa0", background:"#F0F3F5", padding:"1px 7px", borderRadius:10, fontWeight:600 }}>{chip.count}</span>
+                          {chip.name}
+                          <span style={{ fontSize:11, fontWeight:600, background:"rgba(0,0,0,0.07)", padding:"2px 8px", borderRadius:100 }}>{chip.count}</span>
                         </button>
                       ))}
                     </div>
@@ -742,8 +690,8 @@ export default function FindLocalCarePage() {
 
               {/* ─── WHY US DARK SECTION ────────────────────────────────────── */}
               <section style={{
-                background: "#13527a",
-                padding: isMobile ? "40px 24px" : "74px 56px",
+                background: "#071e34",
+                padding: isMobile ? "64px 24px" : "88px 56px",
                 marginBottom: "20px",
                 overflow: "hidden",
                 position: "relative",
@@ -758,12 +706,12 @@ export default function FindLocalCarePage() {
                   pointerEvents: "none",
                 }}/>
                 <div style={{ position:"relative", textAlign:"center" }}>
-                  <div style={{ fontSize:10.5, fontWeight:800, letterSpacing:"2px", color:"#46c4d9", textTransform:"uppercase" as const, marginBottom:0 }}>
-                    WHY US
+                  <div style={{ fontFamily:"Outfit, sans-serif", fontSize:16, fontWeight:700, letterSpacing:"0.14em", color:C.teal, textTransform:"uppercase" as const, marginBottom:8 }}>
+                    Why Hospital.com
                   </div>
-                  <h2 style={{ fontSize:isMobile?24:34, fontWeight:900, color:"#fff", margin:"0 auto 20px", lineHeight:1.25, maxWidth:1040, marginBottom:40 }}>
+                  <h2 style={{ fontFamily:"Outfit, sans-serif", fontSize:isMobile?24:34, fontWeight:700, color:"#fff", margin:"0 auto 40px", lineHeight:1.1, maxWidth:1040, letterSpacing:"-0.03em" }}>
                     Everything you need to find{" "}
-                    <span style={{ textDecoration:"underline", textDecorationColor:"#46c4d9", color:"#46c4d9"}}>better care</span>
+                    <em style={{ fontStyle:"italic", color:C.teal }}>better care</em>
                   </h2>
                   <div style={{ marginBottom:52 }}>
                     <div style={{ fontSize:isMobile?56:76, fontWeight:900, color:"#fff", lineHeight:1, letterSpacing:"-2px" }}>1
@@ -775,10 +723,10 @@ export default function FindLocalCarePage() {
                   </div>
                   <div style={{ display:"flex", flexDirection:isMobile?"column":"row", alignItems:"stretch", maxWidth:1200, margin:"0 auto" }}>
                     {[
-                      { icon:<svg width="70" height="70" viewBox="0 0 24 24" fill="none" stroke="#46c4d9" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="9,12 11,14 15,10"/></svg>, title:"Verified Providers", desc:"Every provider is credentialed and background-checked." },
-                      { icon:<svg width="70" height="70" viewBox="0 0 24 24" fill="none" stroke="#46c4d9" strokeWidth="2"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>, title:"Smarter Reviews", desc:"Smart, unified and summarized reviews." },
-                      { icon:<svg width="70" height="70" viewBox="0 0 24 24" fill="none" stroke="#46c4d9" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M9 12h2m0 0V9m0 3v3" strokeLinecap="round"/><path d="M14 9h1a2 2 0 0 1 0 4h-1" strokeLinecap="round"/></svg>, title:"AI Navigator", desc:"Describe symptoms, get matched to the right specialist instantly." },
-                      { icon:<svg width="70" height="70" viewBox="0 0 24 24" fill="none" stroke="#46c4d9" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="9,12 11,14 15,10"/></svg>, title:"Other Benefit", desc:"Seamless booking with no calls or callbacks required." },
+                      { icon:<svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#46c4d9" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="9,12 11,14 15,10"/></svg>, title:"Verified Providers", desc:"Every provider is credentialed and background-checked." },
+                      { icon:<svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#46c4d9" strokeWidth="2"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>, title:"Smarter Reviews", desc:"Smart, unified and summarized reviews." },
+                      { icon:<svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#46c4d9" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M9 12h2m0 0V9m0 3v3" strokeLinecap="round"/><path d="M14 9h1a2 2 0 0 1 0 4h-1" strokeLinecap="round"/></svg>, title:"AI Navigator", desc:"Describe symptoms, get matched to the right specialist instantly." },
+                      { icon:<svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#46c4d9" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="9,12 11,14 15,10"/></svg>, title:"Other Benefit", desc:"Seamless booking with no calls or callbacks required." },
                     ].map((card, i) => (
                       <>
                         {i > 0 && !isMobile && (
@@ -1056,10 +1004,10 @@ export default function FindLocalCarePage() {
         {/* ─── PROVIDER CTA (only in browse mode) ───────────────────────────── */}
         {!showResults && (
           <div style={{ padding:isMobile?"0 16px 40px":"0", margin:"0 auto" }}>
-            <div style={{ borderRadius:20, padding:isMobile?"0 28px 48px":"0 56px 64px", position:"relative", overflow:"hidden", textAlign:"center" }}>
+            <div style={{ borderRadius:20, padding:isMobile?"0 28px 48px":"0px 56px 50px", position:"relative", overflow:"hidden", textAlign:"center" }}>
               <div style={{ position:"absolute", inset:0, backgroundImage:"radial-gradient(circle, rgba(255,255,255,.04) 1px, transparent 1px)", backgroundSize:"24px 24px", pointerEvents:"none" }}/>
               <div style={{ position:"relative", maxWidth:600, margin:"0 auto" }}>
-                <div style={{ display:"inline-flex", alignItems:"center", borderRadius:20, padding:"5px 18px", fontSize:12.5, fontWeight:800, color:"#46c4d9", letterSpacing:"1.5px", textTransform:"uppercase" as const, marginBottom:20, marginTop:0 }}>
+                <div style={{ display:"inline-flex", alignItems:"center", borderRadius:20, padding:"40px 15px 18px", fontSize:14, fontWeight:800, color:"#46c4d9", letterSpacing:"1px", textTransform:"uppercase" as const, marginBottom:20, marginTop:0 }}>
                   FOR PROVIDERS
                 </div>
                 <h3 style={{ color:"#13527a", fontSize:isMobile?26:36, fontWeight:900, marginBottom:14, lineHeight:1.25 }}>

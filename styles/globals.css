@@ -3,7 +3,7 @@
 /* Fonts: Outfit (headings) · Poppins (body/UI) */
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { overflow-x: hidden; }
+html { overflow-x: hidden; }
 body { font-family: 'Poppins', sans-serif; background: #F6F9FA; color: #0E1C26; }
 h1, h2, h3, h4, h5, h6 { font-family: 'Outfit', sans-serif; }
 

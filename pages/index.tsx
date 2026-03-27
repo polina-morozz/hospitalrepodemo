@@ -76,7 +76,7 @@ export default function HomePage() {
       <div style={{ height:"calc(100vh - 58px)", overflow:"hidden", display:"flex", flexDirection:"column", background:"#fff" }}>
 
         {/* ─── HERO ─────────────────────────────────────────────────────────── */}
-        <div style={{ flex:1, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:isMobile?"20px 20px 8px":"28px 20px 12px" }}>
+        <div style={{ flex:1, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:isMobile?"20px 20px 8px":"10px 20px 12px" }}>
           <div className="fade-up" style={{ textAlign:"center", maxWidth:680, width:"100%" }}>
 
             {/* Logo */}
@@ -87,7 +87,7 @@ export default function HomePage() {
             </div>
 
             {/* Subtitle */}
-            <p style={{ color:"#7a8fa0", fontSize:isMobile?13:17, marginBottom:isMobile?18:24, fontWeight:400, letterSpacing:"0.1px" }}>
+            <p style={{ color:"#7a8fa0", fontSize:isMobile?13:17, marginBottom:isMobile?18:33, fontWeight:400, letterSpacing:"0.1px" }}>
               Your AI Healthcare Navigator
             </p>
 
@@ -111,7 +111,7 @@ export default function HomePage() {
             </div>
 
             {/* Suggestion chips */}
-            <div className="home-chips" style={{ display:"flex", gap:8, flexWrap:"wrap", justifyContent:"center", marginBottom:isMobile?20:28 }}>
+            <div className="home-chips" style={{ display:"flex", gap:8, flexWrap:"wrap", justifyContent:"center", marginBottom:isMobile?20:35 }}>
               {suggestions.map(s=>(
                 <button key={s} onClick={()=>send(s)}
                   style={{ background:"#fff", border:`1px solid ${C.border}`, borderRadius:20, padding:isMobile?"5px 12px":"5px 14px", fontSize:isMobile?11:12.5, color:"#7a8fa0", cursor:"pointer", transition:"all .15s", fontFamily:"inherit" }}

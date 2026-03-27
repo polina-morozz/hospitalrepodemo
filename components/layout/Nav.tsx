@@ -79,7 +79,7 @@ export default function Nav({
 
   return (
     <>
-      <nav style={{ height:58, display:"flex", alignItems:"center", justifyContent:"space-between", padding:"0 24px", background:C.white, borderBottom:`1px solid ${C.border}`, position:"sticky", top:0, zIndex:200 }}>
+      <nav style={{ height:58, display:"flex", alignItems:"center", justifyContent:"space-between", padding:"0 24px", background:"rgba(255,255,255,0.92)", backdropFilter:"blur(12px)", WebkitBackdropFilter:"blur(12px)", borderBottom:`1px solid ${C.border}`, position:"sticky", top:0, zIndex:200 }}>
         <div onClick={handleLogoClick} style={{ display:"flex", alignItems:"center", gap:6, cursor:"pointer", userSelect:"none", minWidth:140 }}>
           <span style={{ fontSize:17, fontWeight:800, letterSpacing:"-.3px" }}>
             <span style={{ color:C.teal }}>hospital</span><span style={{ color:"#13527a", fontWeight:500, fontSize:14 }}>.com</span>
