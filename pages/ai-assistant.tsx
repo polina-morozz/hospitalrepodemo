@@ -412,8 +412,9 @@ export default function AiAssistantPage() {
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const AiAvatar = () => (
-    <div style={{ width:38, height:38, borderRadius:14, background:`linear-gradient(135deg, ${C.tealLt}, ${C.tealBg})`, border:`1.5px solid ${C.teal}25`, flexShrink:0, overflow:"hidden", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:800, fontSize:14, color:C.teal }}>
-      AI
+    <div style={{ width:38, height:38, borderRadius:14, background:`linear-gradient(135deg, ${C.tealLt}, ${C.tealBg})`, border:`1.5px solid ${C.teal}25`, flexShrink:0, overflow:"hidden", display:"flex", alignItems:"center", justifyContent:"center", padding:6 }}>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src="/hospital-logo.svg" alt="Hospital.com AI" style={{ width:"100%", height:"100%", objectFit:"contain" }} />
     </div>
   );
 

@@ -4,7 +4,6 @@ import { useRouter } from "next/router";
 import C from "@/lib/tokens";
 import { useApp } from "@/lib/context/AppContext";
 import useIsMobile from "@/lib/hooks/useIsMobile";
-import SealBadge from "@/components/ui/SealBadge";
 import Footer from "@/components/layout/Footer";
 
 // ─── FIND LOCAL CARE PAGE ─────────────────────────────────────────────────────
@@ -12,6 +11,7 @@ import Footer from "@/components/layout/Footer";
 // ─── INTERFACES ───────────────────────────────────────────────────────────────
 interface Provider {
   id: number;
+  type: "doctor" | "clinic";
   name: string;
   specialty: string;
   rating: number;
@@ -57,13 +57,13 @@ interface ProviderCardProps {
 
 // ─── DATA ─────────────────────────────────────────────────────────────────────
 const PROVIDERS: Provider[] = [
-  { id:1, name:"Dr. Sarah Mitchell", specialty:"Family Medicine", rating:4.8, reviews:312, distance:0.8, city:"New York", address:"120 E 36th St", hours:"Mon–Fri 9–5", phone:"+1 212-555-0192", image:"SM", photo:"https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=150&h=150&fit=crop&crop=face", tags:["Family Medicine","Preventive Care"], contracted:true, hasCalendar:true, amenities:["Wheelchair Accessible","Wi-Fi","Parking"] },
-  { id:2, name:"Dr. James Okafor", specialty:"Cardiology", rating:4.9, reviews:187, distance:1.2, city:"New York", address:"340 E 72nd St", hours:"Tue–Sat 10–6", phone:"+1 212-555-0234", image:"JO", photo:"https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=150&h=150&fit=crop&crop=face", tags:["Cardiology","Internal Medicine"], contracted:true, hasCalendar:true, amenities:["Wheelchair Accessible","Parking"] },
-  { id:3, name:"Dr. Marcus Webb", specialty:"Neurology", rating:4.7, reviews:298, distance:2.1, city:"Los Angeles", address:"8635 W 3rd St, Ste 200", hours:"Mon–Thu 8–4", phone:"+1 310-555-0311", image:"MW", photo:"https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=150&h=150&fit=crop&crop=face", tags:["Neurology","Headache & Migraine"], contracted:true, hasCalendar:true, amenities:["Wheelchair Accessible","Parking"] },
-  { id:4, name:"Glow Medical Spa", specialty:"Medical Aesthetics", rating:4.6, reviews:530, distance:1.5, city:"Miami", address:"1395 Brickell Ave, Ste 800", hours:"Daily 10–7", phone:"+1 305-555-0445", image:"GM", photo:"https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?w=150&h=150&fit=crop&crop=face", tags:["Botox","Injectables","Skin Care"], contracted:true, hasCalendar:true, amenities:["Wi-Fi","Parking","Wheelchair Accessible","Private Rooms"] },
-  { id:5, name:"Dr. Amir Patel", specialty:"Orthopedics", rating:4.5, reviews:203, distance:3.4, city:"Chicago", address:"680 N Lake Shore Dr", hours:"Mon–Fri 8–3", phone:"+1 312-555-0678", image:"AP", photo:"https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150&h=150&fit=crop&crop=face", tags:["Orthopedics","Sports Medicine"], contracted:true, hasCalendar:false, amenities:["Parking","Wheelchair Accessible"] },
-  { id:6, name:"Dr. Priya Sharma", specialty:"Cardiology", rating:4.3, reviews:156, distance:4.2, city:"Houston", address:"6624 Fannin St", hours:"MWF 9–4", phone:"+1 713-555-0789", image:"PS", photo:"https://images.unsplash.com/photo-1651008376811-b90baee60c1f?w=150&h=150&fit=crop&crop=face", tags:["Cardiology","Echocardiography"], contracted:false, hasCalendar:false, amenities:[] },
-  { id:7, name:"CityHealth Clinic", specialty:"Family Medicine", rating:4.2, reviews:89, distance:5.1, city:"Los Angeles", address:"4835 Van Nuys Blvd, Ste 105", hours:"Daily 8–8", phone:"+1 818-555-0890", image:"CH", photo:"https://images.unsplash.com/photo-1666214280557-091e285b2bba?w=150&h=150&fit=crop&crop=face", tags:["Family Medicine","Walk-in"], contracted:false, hasCalendar:false, amenities:[] },
+  { id:1, type:"doctor", name:"Dr. Sarah Mitchell", specialty:"Family Medicine", rating:4.8, reviews:312, distance:0.8, city:"New York", address:"120 E 36th St", hours:"Mon–Fri 9–5", phone:"+1 212-555-0192", image:"SM", photo:"https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=150&h=150&fit=crop&crop=face", tags:["Family Medicine","Preventive Care"], contracted:true, hasCalendar:true, amenities:["Wheelchair Accessible","Wi-Fi","Parking"] },
+  { id:2, type:"doctor", name:"Dr. James Okafor", specialty:"Cardiology", rating:4.9, reviews:187, distance:1.2, city:"New York", address:"340 E 72nd St", hours:"Tue–Sat 10–6", phone:"+1 212-555-0234", image:"JO", photo:"https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=150&h=150&fit=crop&crop=face", tags:["Cardiology","Internal Medicine"], contracted:true, hasCalendar:true, amenities:["Wheelchair Accessible","Parking"] },
+  { id:3, type:"doctor", name:"Dr. Marcus Webb", specialty:"Neurology", rating:4.7, reviews:298, distance:2.1, city:"Los Angeles", address:"8635 W 3rd St, Ste 200", hours:"Mon–Thu 8–4", phone:"+1 310-555-0311", image:"MW", photo:"https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=150&h=150&fit=crop&crop=face", tags:["Neurology","Headache & Migraine"], contracted:true, hasCalendar:true, amenities:["Wheelchair Accessible","Parking"] },
+  { id:4, type:"clinic", name:"Glow Medical Spa", specialty:"Medical Aesthetics", rating:4.6, reviews:530, distance:1.5, city:"Miami", address:"1395 Brickell Ave, Ste 800", hours:"Daily 10–7", phone:"+1 305-555-0445", image:"GM", photo:"https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?w=150&h=150&fit=crop&crop=face", tags:["Botox","Injectables","Skin Care"], contracted:true, hasCalendar:true, amenities:["Wi-Fi","Parking","Wheelchair Accessible","Private Rooms"] },
+  { id:5, type:"doctor", name:"Dr. Amir Patel", specialty:"Orthopedics", rating:4.5, reviews:203, distance:3.4, city:"Chicago", address:"680 N Lake Shore Dr", hours:"Mon–Fri 8–3", phone:"+1 312-555-0678", image:"AP", photo:"https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150&h=150&fit=crop&crop=face", tags:["Orthopedics","Sports Medicine"], contracted:true, hasCalendar:false, amenities:["Parking","Wheelchair Accessible"] },
+  { id:6, type:"doctor", name:"Dr. Priya Sharma", specialty:"Cardiology", rating:4.3, reviews:156, distance:4.2, city:"Houston", address:"6624 Fannin St", hours:"MWF 9–4", phone:"+1 713-555-0789", image:"PS", photo:"https://images.unsplash.com/photo-1651008376811-b90baee60c1f?w=150&h=150&fit=crop&crop=face", tags:["Cardiology","Echocardiography"], contracted:false, hasCalendar:false, amenities:[] },
+  { id:7, type:"clinic", name:"CityHealth Clinic", specialty:"Family Medicine", rating:4.2, reviews:89, distance:5.1, city:"Los Angeles", address:"4835 Van Nuys Blvd, Ste 105", hours:"Daily 8–8", phone:"+1 818-555-0890", image:"CH", photo:"https://images.unsplash.com/photo-1666214280557-091e285b2bba?w=150&h=150&fit=crop&crop=face", tags:["Family Medicine","Walk-in"], contracted:false, hasCalendar:false, amenities:[] },
 ];
 
 const INSURANCE_CARRIERS: InsuranceCarrier[] = [
@@ -113,10 +113,15 @@ function ProviderCard({ provider, bookmarks, toggleBookmark, isLoggedIn }: Provi
   const router = useRouter();
   const [imgErr, setImgErr] = useState(false);
   const isBookmarked = bookmarks.includes(provider.id);
+  const isDoctor = provider.type === "doctor";
 
   return (
     <div className="card" onClick={() => router.push(`/providers/${provider.id}`)}
-      style={{ background:C.white, border:`1px solid ${C.border}`, borderRadius:14, padding:"18px 20px", cursor:"pointer", boxShadow:"0 1px 4px rgba(0,0,0,.05)", display:"flex", gap:14, alignItems:"flex-start", position:"relative" }}>
+      style={{ background:C.white, border:`1px solid ${C.border}`, borderRadius:14, padding:"18px 20px", cursor:"pointer", boxShadow:"0 1px 4px rgba(0,0,0,.05)", display:"flex", gap:14, alignItems:"flex-start", position:"relative", transition:"box-shadow .15s, border-color .15s" }}
+      onMouseEnter={e=>{(e.currentTarget as HTMLDivElement).style.boxShadow="0 6px 24px rgba(16,117,173,0.12)";(e.currentTarget as HTMLDivElement).style.borderColor=C.teal;}}
+      onMouseLeave={e=>{(e.currentTarget as HTMLDivElement).style.boxShadow="0 1px 4px rgba(0,0,0,.05)";(e.currentTarget as HTMLDivElement).style.borderColor=C.border;}}>
+
+      {/* Bookmark */}
       <button onClick={e=>{e.stopPropagation();if(!isLoggedIn){router.push("/signup");return;}toggleBookmark(provider.id);}}
         style={{ position:"absolute", top:14, right:14, background:"none", border:"none", cursor:"pointer", padding:4 }}
         title={isLoggedIn?(isBookmarked?"Remove bookmark":"Bookmark"):"Sign up to bookmark"}>
@@ -124,36 +129,70 @@ function ProviderCard({ provider, bookmarks, toggleBookmark, isLoggedIn }: Provi
           <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
         </svg>
       </button>
-      <div style={{ width:52, height:52, borderRadius:12, overflow:"hidden", flexShrink:0, border:`1px solid ${C.borderLt}`, display:"flex", alignItems:"center", justifyContent:"center", background:C.tealLt, fontWeight:800, fontSize:16, color:C.teal }}>
+
+      {/* Photo */}
+      <div style={{ width:56, height:56, borderRadius:isDoctor?14:10, overflow:"hidden", flexShrink:0, border:`1px solid ${C.borderLt}`, display:"flex", alignItems:"center", justifyContent:"center", background:C.tealLt, fontWeight:800, fontSize:16, color:C.teal }}>
         {provider.photo && !imgErr
           // eslint-disable-next-line @next/next/no-img-element
           ? <img src={provider.photo} alt={provider.name} onError={()=>setImgErr(true)} style={{ width:"100%", height:"100%", objectFit:"cover" }}/>
           : provider.image}
       </div>
+
       <div style={{ flex:1, minWidth:0, paddingRight:24 }}>
-        <div style={{ display:"flex", alignItems:"center", gap:6, flexWrap:"wrap", marginBottom:3 }}>
-          <span style={{ fontWeight:700, fontSize:14.5 }}>{provider.name}</span>
-          {provider.contracted && <SealBadge small />}
+        {/* Type badge + name */}
+        <div style={{ display:"flex", alignItems:"center", gap:6, marginBottom:2, flexWrap:"wrap" }}>
+          <span style={{ display:"inline-block", background: isDoctor ? "rgba(70,196,217,0.10)" : "rgba(16,117,173,0.08)", color: isDoctor ? C.teal : C.blue, fontSize:9.5, fontWeight:700, letterSpacing:"0.08em", textTransform:"uppercase" as const, padding:"2px 8px", borderRadius:100, border:`1px solid ${isDoctor?"rgba(70,196,217,0.25)":"rgba(16,117,173,0.2)"}` }}>
+            {isDoctor ? "Doctor" : "Clinic"}
+          </span>
+          {provider.contracted && (
+            <span style={{ display:"inline-flex", alignItems:"center", gap:3, background:C.tealLt, color:C.teal, fontSize:9.5, fontWeight:700, padding:"2px 8px", borderRadius:100, border:`1px solid rgba(70,196,217,0.3)` }}>
+              <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke={C.teal} strokeWidth="3"><polyline points="20,6 9,17 4,12"/></svg>
+              Verified Partner
+            </span>
+          )}
         </div>
+        <div style={{ fontWeight:700, fontSize:14.5, marginBottom:3, color:C.text }}>{provider.name}</div>
         <div style={{ color:C.textSm, fontSize:12.5, marginBottom:6 }}>{provider.specialty}</div>
-        <div style={{ display:"flex", gap:8, alignItems:"center", fontSize:12, color:C.textSm, marginBottom:8 }}>
-          <span style={{ color:C.amber, fontWeight:600 }}>★ {provider.rating}</span>
+
+        {/* Rating + meta */}
+        <div style={{ display:"flex", gap:8, alignItems:"center", fontSize:12, color:C.textSm, marginBottom:8, flexWrap:"wrap" }}>
+          <span style={{ display:"flex", alignItems:"center", gap:3 }}>
+            {[1,2,3,4,5].map(s=><span key={s} style={{ color:s<=Math.round(provider.rating)?"#f0c840":C.grayMd, fontSize:11 }}>★</span>)}
+            <strong style={{ color:C.text, fontSize:12, fontWeight:700, marginLeft:2 }}>{provider.rating}</strong>
+          </span>
           <span>· {provider.reviews} reviews</span>
           <span>· {provider.distance}km</span>
           <span>· {provider.city}</span>
         </div>
+
+        {/* Tags */}
         <div style={{ display:"flex", gap:5, flexWrap:"wrap", marginBottom:8 }}>
-          {provider.tags.map(t => <span key={t} style={{ background:C.tealLt, color:C.teal, fontSize:10.5, fontWeight:600, padding:"2px 9px", borderRadius:10 }}>{t}</span>)}
+          {provider.tags.map(t => <span key={t} style={{ background:C.tealLt, color:C.teal, fontSize:10.5, fontWeight:600, padding:"3px 10px", borderRadius:100, border:`1px solid rgba(70,196,217,0.25)` }}>{t}</span>)}
         </div>
-        <div style={{ fontSize:12, color:C.textSm, marginBottom:10 }}>{provider.address} · {provider.hours}</div>
+
+        {/* Address + hours */}
+        <div style={{ display:"flex", alignItems:"center", gap:5, fontSize:12, color:C.textSm, marginBottom:10 }}>
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke={C.teal} strokeWidth="2.5"><path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z"/><circle cx="12" cy="10" r="3"/></svg>
+          {provider.address} · {provider.hours}
+        </div>
+
+        {/* Amenities */}
         {(provider.amenities||[]).length > 0 && (
-          <div style={{ display:"flex", gap:4, flexWrap:"wrap", marginBottom:8 }}>
+          <div style={{ display:"flex", gap:4, flexWrap:"wrap", marginBottom:10 }}>
             {provider.amenities.map(a => <span key={a} style={{ background:C.blueLt, color:C.blue, fontSize:10, fontWeight:600, padding:"2px 8px", borderRadius:20 }}>{a}</span>)}
           </div>
         )}
-        {provider.contracted
-          ? <button className="btn-primary" onClick={e=>{e.stopPropagation();router.push(`/providers/${provider.id}`);}} style={{ padding:"8px 22px", border:"none", borderRadius:20, background:C.teal, color:"#fff", fontWeight:700, fontSize:12.5, cursor:"pointer", fontFamily:"inherit" }}>Book Appointment</button>
-          : <button className="btn-ghost" onClick={e=>{e.stopPropagation();router.push(`/providers/${provider.id}`);}} style={{ padding:"8px 22px", border:`1.5px solid ${C.border}`, borderRadius:20, background:C.white, color:C.textMd, fontWeight:600, fontSize:12.5, cursor:"pointer", fontFamily:"inherit" }}>Learn More</button>}
+
+        {/* Book Appointment button — only for contracted providers */}
+        {provider.contracted && (
+          <button onClick={e=>{e.stopPropagation();router.push(`/providers/${provider.id}`);}}
+            style={{ padding:"8px 22px", border:"none", borderRadius:20, background:C.teal, color:"#fff", fontWeight:700, fontSize:12.5, cursor:"pointer", fontFamily:"inherit", display:"inline-flex", alignItems:"center", gap:6, transition:"opacity .15s" }}
+            onMouseEnter={e=>(e.currentTarget as HTMLButtonElement).style.opacity="0.88"}
+            onMouseLeave={e=>(e.currentTarget as HTMLButtonElement).style.opacity="1"}>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Book Appointment
+          </button>
+        )}
       </div>
     </div>
   );
@@ -348,7 +387,7 @@ fits your life
                       <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
                     </svg>
                     <div style={{ flex:1, minWidth:0 }}>
-                      <div style={{ fontFamily:"Outfit, sans-serif", fontSize:10, fontWeight:700, letterSpacing:"0.08em", textTransform:"uppercase" as const, color:"#7a8fa0", marginBottom:3 }}>Specialty / Procedure</div>
+                      <div style={{ textAlign:"left",fontFamily:"Outfit, sans-serif", fontSize:10, fontWeight:700, letterSpacing:"0.08em", textTransform:"uppercase" as const, color:"#7a8fa0", marginBottom:3 }}>Specialty / Procedure</div>
                       <div onClick={() => setOpenDropdown(openDropdown==="specialty" ? null : "specialty")}
                         style={{ display:"flex", alignItems:"center", gap:6, cursor:"pointer" }}>
                         <span style={{ fontSize:14, fontWeight:500, color:heroSpecialty==="All"?"#a8bfcc":"#0E1C26", flex:1, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" as const }}>
@@ -384,9 +423,9 @@ fits your life
                       <circle cx="12" cy="10" r="3"/>
                     </svg>
                     <div style={{ flex:1 }}>
-                      <div style={{ fontFamily:"Outfit, sans-serif", fontSize:10, fontWeight:700, letterSpacing:"0.08em", textTransform:"uppercase" as const, color:"#7a8fa0", marginBottom:3 }}>Location</div>
+                      <div style={{textAlign:"left", fontFamily:"Outfit, sans-serif", fontSize:10, fontWeight:700, letterSpacing:"0.08em", textTransform:"uppercase" as const, color:"#7a8fa0", marginBottom:3 }}>Location</div>
                       <input value={heroLocation} onChange={e=>setHeroLocation(e.target.value)} onKeyDown={e=>e.key==="Enter"&&handleHeroSearch()}
-                        placeholder="City, ZIP, or neighbourhood"
+                        placeholder="City, ZIP"
                         style={{ border:"none", outline:"none", fontSize:14, fontWeight:500, color:heroLocation?"#0E1C26":"#a8bfcc", fontFamily:"inherit", background:"transparent", width:"100%" }}/>
                     </div>
                   </div>
@@ -403,7 +442,7 @@ fits your life
                       <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
                     </svg>
                     <div style={{ flex:1, minWidth:0 }}>
-                      <div style={{ fontFamily:"Outfit, sans-serif", fontSize:10, fontWeight:700, letterSpacing:"0.08em", textTransform:"uppercase" as const, color:"#7a8fa0", marginBottom:3 }}>Insurance (Optional)</div>
+                      <div style={{ textAlign:"left",fontFamily:"Outfit, sans-serif", fontSize:10, fontWeight:700, letterSpacing:"0.08em", textTransform:"uppercase" as const, color:"#7a8fa0", marginBottom:3 }}>Insurance (Optional)</div>
                       <div onClick={() => setOpenDropdown(openDropdown==="insurance" ? null : "insurance")}
                         style={{ display:"flex", alignItems:"center", gap:6, cursor:"pointer" }}>
                         <span style={{ fontSize:14, fontWeight:500, color:heroInsurance==="All"?"#a8bfcc":"#0E1C26", flex:1, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" as const }}>
@@ -458,7 +497,7 @@ fits your life
                       <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
                     </svg>
                     <div style={{ minWidth:0 }}>
-                      <div style={{ fontFamily:"Outfit, sans-serif", fontSize:10, fontWeight:700, letterSpacing:"0.08em", textTransform:"uppercase" as const, color:"#7a8fa0", marginBottom:3 }}>Min Rating</div>
+                      <div style={{textAlign:"left", fontFamily:"Outfit, sans-serif", fontSize:10, fontWeight:700, letterSpacing:"0.08em", textTransform:"uppercase" as const, color:"#7a8fa0", marginBottom:3 }}>Min Rating</div>
                       <div onClick={() => setOpenDropdown(openDropdown==="rating" ? null : "rating")}
                         style={{ display:"flex", alignItems:"center", gap:6, cursor:"pointer" }}>
                         <span style={{ fontSize:14, fontWeight:500, color:heroRating==="Any"?"#a8bfcc":"#0E1C26", whiteSpace:"nowrap" as const }}>
@@ -520,7 +559,7 @@ fits your life
                     </button>
                   </div>
                   <div style={{ display:"flex", flexWrap:"wrap", gap:8, marginTop:12 }}>
-                    {["Cardiologist near downtown","Family doctor accepting new patients","Dentist open on weekends","Dermatologist with 4.5+ stars","Psychiatrist accepting Medicaid"].map(s => (
+                    {["Cardiologist near downtown","Family doctor accepting new patients","Dentist open on weekends","Dermatologist with 4.5+ stars"].map(s => (
                       <span key={s} onClick={()=>setAiQuery(s)}
                         style={{ fontSize:12, color:"#1275ad", background:"rgba(18,117,173,0.06)", border:"1px solid rgba(18,117,173,0.15)", borderRadius:100, padding:"5px 13px", cursor:"pointer", fontWeight:500, transition:"all .18s" }}
                         onMouseEnter={e=>{(e.currentTarget as HTMLSpanElement).style.background="#1275ad";(e.currentTarget as HTMLSpanElement).style.color="white";}}
@@ -634,7 +673,7 @@ fits your life
                       {SPECIALTY_CHIPS.map(chip => (
                         <button
                           key={chip.name}
-                          onClick={() => { setSpecialty(chip.name); setShowResults(true); }}
+                          onClick={() => { router.push(`/find-local-care/${chip.name.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "")}`); }}
                           style={{
                             display:"flex", alignItems:"center", gap:7,
                             padding:"8px 14px", borderRadius:100,
