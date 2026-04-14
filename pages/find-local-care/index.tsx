@@ -93,6 +93,7 @@ const SPECIALTY_CHIPS = [
   { icon:<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#46c4d9" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{flexShrink:0}}><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>, name:"OB-GYN",            count:"265" },
   { icon:<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#46c4d9" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{flexShrink:0}}><circle cx="12" cy="12" r="3"/><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/></svg>, name:"Ophthalmologist",   count:"175" },
   { icon:<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#46c4d9" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{flexShrink:0}}><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22,4 12,14.01 9,11.01"/></svg>, name:"Urgent Care",       count:"195" },
+  { icon:<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#46c4d9" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{flexShrink:0}}><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/></svg>, name:"Acupuncturist",    count:"142" },
 ];
 
 const PROCEDURE_CHIPS = [
@@ -257,7 +258,7 @@ export default function FindLocalCarePage() {
 
   const filtered = applyFilters(PROVIDERS);
 
-  const SPECIALTIES = ["All","Cardiology","Dentistry","Dermatology","Family Medicine","Ophthalmology","Orthopedics","Psychiatry","Pediatrics","Urgent Care","Gastroenterology","OB-GYN","Medical Aesthetics"];
+  const SPECIALTIES = ["All","Acupuncture","Cardiology","Dentistry","Dermatology","Family Medicine","Ophthalmology","Orthopedics","Psychiatry","Pediatrics","Urgent Care","Gastroenterology","OB-GYN","Medical Aesthetics"];
   const RATINGS = [{ val:"Any", label:"Any Rating" },{ val:"4", label:"4+ Stars" },{ val:"4.5", label:"4.5+ Stars" }];
 
   return (
@@ -673,7 +674,7 @@ fits your life
                       {SPECIALTY_CHIPS.map(chip => (
                         <button
                           key={chip.name}
-                          onClick={() => { router.push(`/find-local-care/${chip.name.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "")}`); }}
+                          onClick={() => { router.push(`/${chip.name.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "")}`); }}
                           style={{
                             display:"flex", alignItems:"center", gap:7,
                             padding:"8px 14px", borderRadius:100,
@@ -833,7 +834,7 @@ fits your life
                     {openDropdown==="fs" && (
                       <div style={{ position:"absolute" as const, top:"calc(100% + 6px)", left:0, minWidth:155, background:"#fff", borderRadius:16, boxShadow:"0 16px 48px rgba(0,0,0,.13)", border:"1.5px solid #D6E4EA", zIndex:1000, overflow:"hidden" as const, animation:"dropFade .18s ease" }}>
                         <div className="dd-scroll" style={{ padding:"8px 0", maxHeight:260, overflowY:"auto" as const }}>
-                          {["All","Cardiology","Dentistry","Dermatology","Ophthalmology","Orthopedics","Psychiatry","Pediatrics","Family Medicine","Urgent Care","Gastroenterology","OB-GYN","Medical Aesthetics"].map(s => (
+                          {["All","Acupuncture","Cardiology","Dentistry","Dermatology","Ophthalmology","Orthopedics","Psychiatry","Pediatrics","Family Medicine","Urgent Care","Gastroenterology","OB-GYN","Medical Aesthetics"].map(s => (
                             <div key={s} className="dd-opt" onClick={() => { setSpecialty(s); setOpenDropdown(null); }}
                               style={{ padding:"8px 16px", fontSize:9, cursor:"pointer", display:"flex", alignItems:"center", gap:8,
                                 color: specialty===s?"#46c4d9":"#0E1C26", fontWeight: specialty===s?700:400,

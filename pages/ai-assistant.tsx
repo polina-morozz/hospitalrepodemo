@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, ChangeEvent, ReactNode } from "react";
+import React, { useState, useRef, useEffect, ChangeEvent, ReactNode } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import C from "@/lib/tokens";
@@ -410,6 +410,10 @@ export default function AiAssistantPage() {
   const [facilitatorModal, setFacilitatorModal] = useState(false);
   const [selectedProvider, setSelectedProvider] = useState<Provider | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const [ratings, setRatings] = useState<Record<number, "up" | "down">>({});
+  const [feedbackModal, setFeedbackModal] = useState<{ open: boolean; msgIdx: number | null }>({ open: false, msgIdx: null });
+  const [feedbackText, setFeedbackText] = useState("");
+  const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
 
   const AiAvatar = () => (
     <div style={{ width:38, height:38, borderRadius:14, background:`linear-gradient(135deg, ${C.tealLt}, ${C.tealBg})`, border:`1.5px solid ${C.teal}25`, flexShrink:0, overflow:"hidden", display:"flex", alignItems:"center", justifyContent:"center", padding:6 }}>
@@ -512,30 +516,29 @@ export default function AiAssistantPage() {
 
         <div style={{ flex:1, display:"flex", flexDirection:"column", width:"100%", minWidth:0 }}>
           {/* Header */}
-          <div style={{ padding:isMobile?"10px 14px":"14px 20px", background:C.white, display:"flex", alignItems:"center", gap:10, borderBottom:`1px solid ${C.borderLt}` }}>
+          <div style={{ padding:isMobile?"8px 12px":"8px 16px", background:C.white, display:"flex", alignItems:"center", gap:8, borderBottom:`1px solid ${C.borderLt}` }}>
             <button onClick={() => setSidebarOpen(o => !o)} title="Toggle chat history"
-              style={{ width:isMobile?34:38, height:isMobile?34:38, borderRadius:10, border:`1.5px solid ${sidebarOpen?C.teal:C.border}`, background:sidebarOpen?C.tealLt:C.offWhite, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", transition:"all .15s", flexShrink:0 }}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={sidebarOpen?C.teal:C.textSm} strokeWidth="2">
+              style={{ width:30, height:30, borderRadius:8, border:`1.5px solid ${sidebarOpen?C.teal:C.border}`, background:sidebarOpen?C.tealLt:C.offWhite, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", transition:"all .15s", flexShrink:0 }}>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={sidebarOpen?C.teal:C.textSm} strokeWidth="2">
                 <rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/>
               </svg>
             </button>
             <div style={{ flex:1, minWidth:0 }}>
-              <div style={{ fontSize:15, fontWeight:700, color:C.text, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>
+              <div style={{ fontSize:12.5, fontWeight:600, color:C.textMd, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>
                 {activeChatId ? (chatHistory.find(c => c.id === activeChatId)?.title || "Chat") : "New Chat"}
               </div>
-              {!isMobile && <div style={{ fontSize:11.5, color:C.textSm, marginTop:1 }}>AI Health Assistant</div>}
             </div>
             <button onClick={handleNewChat} title="New chat"
-              style={{ width:isMobile?34:38, height:isMobile?34:38, borderRadius:10, border:`1.5px solid ${C.border}`, background:C.offWhite, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", transition:"all .15s" }}
+              style={{ width:30, height:30, borderRadius:8, border:`1.5px solid ${C.border}`, background:C.offWhite, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", transition:"all .15s" }}
               onMouseEnter={e=>{(e.currentTarget as HTMLButtonElement).style.borderColor=C.teal;(e.currentTarget as HTMLButtonElement).style.background=C.tealLt;}}
               onMouseLeave={e=>{(e.currentTarget as HTMLButtonElement).style.borderColor=C.border;(e.currentTarget as HTMLButtonElement).style.background=C.offWhite;}}>
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={C.teal} strokeWidth="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={C.teal} strokeWidth="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             </button>
           </div>
 
           {/* Messages */}
-          <div style={{ flex:1, overflowY:"auto", padding:isMobile?"16px 14px":"28px 0", background:C.offWhite }}>
-            <div style={{ maxWidth:820, margin:"0 auto", padding:isMobile?0:"0 24px" }}>
+          <div style={{ flex:1, overflowY:"auto", padding:isMobile?"16px 14px":"20px 0", background:C.offWhite }}>
+            <div style={{ maxWidth:960, margin:"0 auto", padding:isMobile?0:"0 20px" }}>
               {msgs.map((msg, i) => (
                 <div key={i} style={{ marginBottom:20 }}>
                   <div style={{ display:"flex", justifyContent:msg.role==="user"?"flex-end":"flex-start", gap:10, alignItems:"flex-end" }}>
@@ -552,6 +555,25 @@ export default function AiAssistantPage() {
                       boxShadow:msg.role==="user"?"0 3px 14px rgba(90,202,214,.22)":"0 1px 6px rgba(0,0,0,.04)",
                     }}>{msg.text}</div>
                   </div>
+
+                  {msg.role === "assistant" && i > 0 && (
+                    <div style={{ marginLeft:isMobile?0:48, marginTop:6, display:"flex", gap:4, alignItems:"center" }}>
+                      <button
+                        onClick={() => setRatings(r => ({ ...r, [i]: "up" }))}
+                        title="Helpful"
+                        style={{ background:"none", border:`1px solid ${ratings[i]==="up"?C.teal:C.borderLt}`, borderRadius:8, padding:"4px 8px", cursor:"pointer", display:"flex", alignItems:"center", gap:4, color:ratings[i]==="up"?C.teal:C.textSm, transition:"all .15s", fontSize:11, fontWeight:ratings[i]==="up"?700:400 }}>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill={ratings[i]==="up"?C.teal:"none"} stroke={ratings[i]==="up"?C.teal:C.textSm} strokeWidth="2"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+                        {ratings[i]==="up" && <span>Helpful</span>}
+                      </button>
+                      <button
+                        onClick={() => { setRatings(r => ({ ...r, [i]: "down" })); setFeedbackSubmitted(false); setFeedbackText(""); setFeedbackModal({ open: true, msgIdx: i }); }}
+                        title="Not helpful"
+                        style={{ background:"none", border:`1px solid ${ratings[i]==="down"?C.red:C.borderLt}`, borderRadius:8, padding:"4px 8px", cursor:"pointer", display:"flex", alignItems:"center", gap:4, color:ratings[i]==="down"?C.red:C.textSm, transition:"all .15s", fontSize:11, fontWeight:ratings[i]==="down"?700:400 }}>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill={ratings[i]==="down"?C.red:"none"} stroke={ratings[i]==="down"?C.red:C.textSm} strokeWidth="2"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3H10z"/><path d="M17 2h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"/></svg>
+                        {ratings[i]==="down" && <span>Not helpful</span>}
+                      </button>
+                    </div>
+                  )}
 
                   {(msg.providers?.length ?? 0) > 0 && (
                     <div style={{ marginTop:12, marginLeft:isMobile?0:48 }}>
@@ -599,21 +621,38 @@ export default function AiAssistantPage() {
           </div>
 
           {/* Input */}
-          <div style={{ padding:isMobile?"12px 14px":"18px 24px", background:C.white, borderTop:`1px solid ${C.borderLt}` }}>
-            <div style={{ maxWidth:820, margin:"0 auto" }}>
-              <div style={{ display:"flex", gap:10, background:C.offWhite, borderRadius:22, padding:"6px 6px 6px 20px", alignItems:"center", border:`1.5px solid ${C.border}`, transition:"border-color .2s, box-shadow .2s" }}>
+          <div style={{ padding:isMobile?"10px 14px":"12px 20px", background:C.white, borderTop:`1px solid ${C.borderLt}` }}>
+            <div style={{ maxWidth:960, margin:"0 auto" }}>
+              <div style={{ display:"flex", gap:8, background:C.offWhite, borderRadius:20, padding:"5px 5px 5px 16px", alignItems:"center", border:`1.5px solid ${C.border}`, transition:"border-color .2s, box-shadow .2s" }}>
                 <input value={input} onChange={(e: ChangeEvent<HTMLInputElement>) => setInput(e.target.value)}
                   onKeyDown={e => e.key === "Enter" && send(input)}
                   placeholder="Describe symptoms or ask a question…"
-                  style={{ flex:1, border:"none", background:"transparent", outline:"none", fontSize:14.5, fontFamily:"inherit", minWidth:0, color:C.text, padding:"6px 0" }}/>
+                  style={{ flex:1, border:"none", background:"transparent", outline:"none", fontSize:13.5, fontFamily:"inherit", minWidth:0, color:C.text, padding:"5px 0" }}/>
                 <button onClick={() => send(input)}
-                  style={{ background:C.teal, border:"none", borderRadius:18, padding:"11px 24px", color:"#fff", fontWeight:700, fontSize:13.5, cursor:"pointer", fontFamily:"inherit", whiteSpace:"nowrap", transition:"background .15s" }}
+                  style={{ background:C.teal, border:"none", borderRadius:16, padding:"9px 20px", color:"#fff", fontWeight:700, fontSize:13, cursor:"pointer", fontFamily:"inherit", whiteSpace:"nowrap", transition:"background .15s" }}
                   onMouseEnter={e=>(e.currentTarget as HTMLButtonElement).style.background=C.tealDk}
                   onMouseLeave={e=>(e.currentTarget as HTMLButtonElement).style.background=C.teal}>
                   Send
                 </button>
               </div>
-              <p style={{ fontSize:10.5, color:C.textSm, textAlign:"center", marginTop:10 }}>For informational purposes only. Not a substitute for professional medical advice.</p>
+              {/* Quick-action chips */}
+              <div style={{ display:"flex", gap:6, marginTop:8, flexWrap:"wrap", justifyContent:"center" }}>
+                <button onClick={() => send("Recommend a provider")} disabled={loading}
+                  style={{ background:"none", border:`1px solid ${C.borderLt}`, borderRadius:14, padding:"4px 11px", fontSize:11.5, color:C.textSm, cursor:"pointer", fontFamily:"inherit", display:"flex", alignItems:"center", gap:4, transition:"all .15s", opacity: loading ? .5 : 1 }}
+                  onMouseEnter={e=>{const b=e.currentTarget;b.style.borderColor=C.teal;b.style.color=C.teal;b.style.background=C.tealLt;}}
+                  onMouseLeave={e=>{const b=e.currentTarget;b.style.borderColor=C.borderLt;b.style.color=C.textSm;b.style.background="none";}}>
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                  Recommend a provider
+                </button>
+                <button onClick={() => send("international clinic recommendation")} disabled={loading}
+                  style={{ background:"none", border:`1px solid ${C.borderLt}`, borderRadius:14, padding:"4px 11px", fontSize:11.5, color:C.textSm, cursor:"pointer", fontFamily:"inherit", display:"flex", alignItems:"center", gap:4, transition:"all .15s", opacity: loading ? .5 : 1 }}
+                  onMouseEnter={e=>{const b=e.currentTarget;b.style.borderColor=C.teal;b.style.color=C.teal;b.style.background=C.tealLt;}}
+                  onMouseLeave={e=>{const b=e.currentTarget;b.style.borderColor=C.borderLt;b.style.color=C.textSm;b.style.background="none";}}>
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                  Recommend an international clinic
+                </button>
+              </div>
+              <p style={{ fontSize:10, color:C.textSm, textAlign:"center", marginTop:6 }}>For informational purposes only. Not a substitute for professional medical advice.</p>
             </div>
           </div>
         </div>
@@ -621,6 +660,65 @@ export default function AiAssistantPage() {
 
       {facilitatorModal && <FacilitatorModal onClose={() => setFacilitatorModal(false)} />}
       {selectedProvider && <ProviderModal provider={selectedProvider} onClose={() => setSelectedProvider(null)} />}
+
+      {/* Feedback popup */}
+      {feedbackModal.open && (
+        <div onClick={e => { if (e.target === e.currentTarget) setFeedbackModal({ open: false, msgIdx: null }); }}
+          style={{ position:"fixed", inset:0, background:"rgba(10,20,30,.35)", display:"flex", alignItems:"center", justifyContent:"center", zIndex:600, padding:16, backdropFilter:"blur(2px)" }}>
+          <div className="fade-up" style={{ background:C.white, borderRadius:18, width:"100%", maxWidth:420, boxShadow:"0 16px 48px rgba(0,0,0,.16)", overflow:"hidden" }}>
+            <div style={{ padding:"18px 20px 14px", borderBottom:`1px solid ${C.borderLt}`, display:"flex", alignItems:"center", justifyContent:"space-between" }}>
+              <div>
+                <div style={{ fontWeight:700, fontSize:14.5, color:C.text }}>Share your feedback</div>
+                <div style={{ fontSize:12, color:C.textSm, marginTop:2 }}>Help us improve the AI assistant</div>
+              </div>
+              <button onClick={() => setFeedbackModal({ open: false, msgIdx: null })}
+                style={{ background:"none", border:"none", cursor:"pointer", color:C.textSm, fontSize:20, lineHeight:1, padding:4, borderRadius:8 }}>×</button>
+            </div>
+            <div style={{ padding:"16px 20px 20px" }}>
+              {feedbackSubmitted ? (
+                <div style={{ textAlign:"center", padding:"20px 0" }}>
+                  <div style={{ width:44, height:44, borderRadius:14, background:C.tealLt, display:"flex", alignItems:"center", justifyContent:"center", margin:"0 auto 12px" }}>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={C.teal} strokeWidth="2.5"><polyline points="20,6 9,17 4,12"/></svg>
+                  </div>
+                  <div style={{ fontWeight:700, fontSize:14, color:C.text, marginBottom:4 }}>Thanks for your feedback!</div>
+                  <div style={{ fontSize:12.5, color:C.textSm }}>We'll use this to improve your experience.</div>
+                </div>
+              ) : (
+                <>
+                  <p style={{ fontSize:12.5, color:C.textMd, marginBottom:12 }}>What could be better about this response?</p>
+                  <div style={{ display:"flex", flexDirection:"column", gap:7, marginBottom:14 }}>
+                    {["Response wasn't relevant", "Information seems incorrect", "Too vague or generic", "Missing provider options"].map(opt => (
+                      <label key={opt} style={{ display:"flex", alignItems:"center", gap:9, cursor:"pointer", fontSize:13, color:C.text }}>
+                        <input type="checkbox" style={{ accentColor:C.teal, width:14, height:14 } as React.CSSProperties} onChange={e => {
+                          if (e.target.checked) setFeedbackText(prev => prev ? `${prev}, ${opt}` : opt);
+                          else setFeedbackText(prev => prev.split(", ").filter(s => s !== opt).join(", "));
+                        }}/>
+                        {opt}
+                      </label>
+                    ))}
+                  </div>
+                  <textarea
+                    value={feedbackText.includes(",") ? "" : feedbackText}
+                    onChange={e => setFeedbackText(e.target.value)}
+                    placeholder="Additional comments (optional)"
+                    rows={3}
+                    style={{ width:"100%", border:`1.5px solid ${C.border}`, borderRadius:10, padding:"10px 12px", fontSize:13, fontFamily:"inherit", color:C.text, background:C.offWhite, resize:"none", outline:"none", boxSizing:"border-box" }}/>
+                  <div style={{ display:"flex", gap:8, marginTop:12, justifyContent:"flex-end" }}>
+                    <button onClick={() => setFeedbackModal({ open: false, msgIdx: null })}
+                      style={{ background:"none", border:`1.5px solid ${C.border}`, borderRadius:10, padding:"8px 18px", fontSize:13, cursor:"pointer", fontFamily:"inherit", color:C.textMd, fontWeight:600 }}>
+                      Cancel
+                    </button>
+                    <button onClick={() => setFeedbackSubmitted(true)}
+                      style={{ background:C.teal, border:"none", borderRadius:10, padding:"8px 18px", fontSize:13, cursor:"pointer", fontFamily:"inherit", color:"#fff", fontWeight:700 }}>
+                      Submit
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
