@@ -681,7 +681,7 @@ export default function AiAssistantPage() {
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={C.teal} strokeWidth="2.5"><polyline points="20,6 9,17 4,12"/></svg>
                   </div>
                   <div style={{ fontWeight:700, fontSize:14, color:C.text, marginBottom:4 }}>Thanks for your feedback!</div>
-                  <div style={{ fontSize:12.5, color:C.textSm }}>We'll use this to improve your experience.</div>
+                  <div style={{ fontSize:12.5, color:C.textSm }}>We&apos;ll use this to improve your experience.</div>
                 </div>
               ) : (
                 <>
