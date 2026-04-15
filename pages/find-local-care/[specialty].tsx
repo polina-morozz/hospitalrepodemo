@@ -466,16 +466,6 @@ export default function SpecialtyPage() {
         )}
       </nav>
 
-      {/* ─── BREADCRUMB ──────────────────────────────────────────────────────── */}
-      <div style={{ background: "#f4f9fc", borderBottom: "1px solid #e8eef2", padding: "13px 0" }}>
-        <div style={{ maxWidth: 1160, margin: "0 auto", padding: "0 32px", display: "flex", alignItems: "center", gap: 8, fontSize: 12.5, color: "#5a7085", flexWrap: "wrap" }}>
-          <button onClick={() => router.push("/find-local-care")} style={{ background: "none", border: "none", cursor: "pointer", fontFamily: "inherit", fontSize: 12.5, color: "#1075ad", fontWeight: 500, padding: 0 }}>Find Local Care</button>
-          <span style={{ opacity: 0.35 }}>›</span>
-          <button onClick={() => router.push("/find-local-care")} style={{ background: "none", border: "none", cursor: "pointer", fontFamily: "inherit", fontSize: 12.5, color: "#1075ad", fontWeight: 500, padding: 0 }}>Specialties</button>
-          <span style={{ opacity: 0.35 }}>›</span>
-          <span>{title}</span>
-        </div>
-      </div>
 
       {/* ─── HERO ────────────────────────────────────────────────────────────── */}
       <section style={{
