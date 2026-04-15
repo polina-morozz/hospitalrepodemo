@@ -83,6 +83,7 @@ const INSURANCE_CARRIERS: InsuranceCarrier[] = [
 const ALL_CITIES = ["New York","Los Angeles","Chicago","Houston","Miami"];
 
 const SPECIALTY_CHIPS = [
+  { icon:<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#46c4d9" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{flexShrink:0}}><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/></svg>, name:"Acupuncturist",    count:"142" },
   { icon:<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#46c4d9" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{flexShrink:0}}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>, name:"Family Doctor",     count:"680" },
   { icon:<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#46c4d9" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{flexShrink:0}}><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>, name:"Cardiologist",      count:"540" },
   { icon:<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#46c4d9" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{flexShrink:0}}><path d="M12 2C8 2 5 5 5 8c0 3.5 3 6 4 8h6c1-2 4-4.5 4-8 0-3-3-6-7-6z"/><path d="M9 17v2a3 3 0 0 0 6 0v-2"/></svg>, name:"Dentist",           count:"820" },
@@ -93,7 +94,6 @@ const SPECIALTY_CHIPS = [
   { icon:<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#46c4d9" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{flexShrink:0}}><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>, name:"OB-GYN",            count:"265" },
   { icon:<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#46c4d9" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{flexShrink:0}}><circle cx="12" cy="12" r="3"/><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/></svg>, name:"Ophthalmologist",   count:"175" },
   { icon:<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#46c4d9" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{flexShrink:0}}><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22,4 12,14.01 9,11.01"/></svg>, name:"Urgent Care",       count:"195" },
-  { icon:<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#46c4d9" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{flexShrink:0}}><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/></svg>, name:"Acupuncturist",    count:"142" },
 ];
 
 const PROCEDURE_CHIPS = [
@@ -674,7 +674,7 @@ fits your life
                       {SPECIALTY_CHIPS.map(chip => (
                         <button
                           key={chip.name}
-                          onClick={() => { router.push(`/${chip.name.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "")}`); }}
+                          onClick={() => { router.push(`/find-local-care/${chip.name.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "")}`); }}
                           style={{
                             display:"flex", alignItems:"center", gap:7,
                             padding:"8px 14px", borderRadius:100,
