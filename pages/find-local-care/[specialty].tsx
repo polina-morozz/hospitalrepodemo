@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import C from "@/lib/tokens";
@@ -357,6 +357,19 @@ export default function SpecialtyPage() {
   const [filterAvail,    setFilterAvail]    = useState(false);
   const [filterIns,      setFilterIns]      = useState(false);
   const [filterPrice,    setFilterPrice]    = useState(false);
+  const [aiMode,         setAiMode]         = useState(false);
+  const [aiQuery,        setAiQuery]        = useState("");
+  const [minRating,      setMinRating]      = useState(0);
+  const [heroRating,     setHeroRating]     = useState("Any");
+  const [openDropdown,   setOpenDropdown]   = useState<string | null>(null);
+
+  const RATINGS = [{ val:"Any", label:"Any Rating" },{ val:"4", label:"4+ Stars" },{ val:"4.5", label:"4.5+ Stars" }];
+
+  useEffect(() => {
+    const handler = () => setOpenDropdown(null);
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
 
   // Base set
   const baseProviders = PROVIDERS.filter(p => !p.parentClinicId && matchesSpecialty(p, specialtyName));
@@ -365,6 +378,7 @@ export default function SpecialtyPage() {
     if (filterVerified && !p.contracted) return false;
     if (filterAvail    && !p.hasCalendar) return false;
     if (insuranceInput.trim() && !p.contracted) return false;
+    if (p.rating < minRating) return false;
     if (searchQuery) {
       const q = searchQuery.toLowerCase();
       if (!p.name.toLowerCase().includes(q) && !p.specialty.toLowerCase().includes(q) &&
@@ -493,63 +507,154 @@ export default function SpecialtyPage() {
             Compare verified {title.toLowerCase()}, read real patient reviews, and choose the right care — with confidence.
           </p>
 
-          {/* Search card */}
+          {/* Search mode toggle */}
+          <div style={{ display:"inline-flex", background:"#e4f4f8", borderRadius:100, padding:4, marginBottom:16, gap:2 }}>
+            <button onClick={() => setAiMode(false)}
+              style={{ padding:"8px 20px", borderRadius:100, fontFamily:"Outfit, sans-serif", fontSize:13, fontWeight:600, cursor:"pointer", border:"none", background:!aiMode?"#071e34":"transparent", color:!aiMode?"white":"#5a7085", transition:"all .2s", display:"flex", alignItems:"center", gap:6 }}>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="7"/><line x1="17" y1="17" x2="22" y2="22"/></svg>
+              Classic Search
+            </button>
+            <button onClick={() => setAiMode(true)}
+              style={{ padding:"8px 20px", borderRadius:100, fontFamily:"Outfit, sans-serif", fontSize:13, fontWeight:600, cursor:"pointer", border:"none", background:aiMode?"#071e34":"transparent", color:aiMode?"white":"#5a7085", transition:"all .2s", display:"flex", alignItems:"center", gap:6 }}>
+              ✦ AI Search
+            </button>
+          </div>
+
+          {/* Classic search card */}
+          {!aiMode && (
           <div style={{
-            width: "100%", maxWidth: 900, background: "#fff", borderRadius: 20,
-            padding: 10, margin: "0 auto 14px",
+            width: "100%", maxWidth: 900, background: "#fff", borderRadius: isMobile ? 20 : 100,
+            padding: isMobile ? 10 : "7px 7px 7px 10px", margin: "0 auto 14px",
             boxShadow: "0 8px 48px rgba(16,117,173,0.13), 0 0 0 1px rgba(16,117,173,0.08)",
-            display: "flex", alignItems: "left",
+            display: "flex", alignItems: "center",
             flexDirection: isMobile ? "column" : "row",
           }}>
-            {[
-              {
-                icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1075ad" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="7"/><line x1="17" y1="17" x2="22" y2="22"/></svg>,
-                label: "Specialty / Procedure",
-                child: <input value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder={specialtyName}
-                  style={{ border: "none", outline: "none", fontFamily: "DM Sans, Poppins, sans-serif", fontSize: 14.5, fontWeight: 500, color: "#112233", background: "transparent", width: "100%", padding: 0 }} />,
-                flex: "1.2",
-              },
-              {
-                icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1075ad" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>,
-                label: "Location",
-                child: <input value={locationInput} onChange={e => setLocationInput(e.target.value)} placeholder="City or auto-detect…"
-                  style={{ border: "none", outline: "none", fontFamily: "DM Sans, Poppins, sans-serif", fontSize: 14.5, color: "#a8bfcc", background: "transparent", width: "100%", padding: 0 }} />,
-                flex: "1",
-              },
-              {
-                icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1075ad" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>,
-                label: "Insurance",
-                child: <input value={insuranceInput} onChange={e => setInsuranceInput(e.target.value)} placeholder="Select plan…"
-                  style={{ border: "none", outline: "none", fontFamily: "DM Sans, Poppins, sans-serif", fontSize: 14.5, color: insuranceInput ? "#112233" : "#a8bfcc", background: "transparent", width: "100%", padding: 0 }} />,
-                flex: "0.7",
-              },
-            ].map((field, i) => (
-              <div key={i} style={{
-                flex: field.flex, display: "flex", alignItems: "flex-start", gap: 12,
-                padding: "14px 18px",
-                borderRight: !isMobile && i < 2 ? "1px solid #cce4f0" : "none",
-                borderBottom: isMobile && i < 2 ? "1px solid #cce4f0" : "none",
-                borderRadius: 12, cursor: "pointer", transition: "background .15s",
-              }}
-                onMouseEnter={e => (e.currentTarget as HTMLDivElement).style.background = "#eef9fc"}
-                onMouseLeave={e => (e.currentTarget as HTMLDivElement).style.background = "transparent"}
-              >
-                {field.icon}
-                <div style={{ display: "flex", flexDirection: "column", gap: 2, flex: 1, textAlign: "left" }}>
-                  <span style={{ fontFamily: "Outfit, sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: "0.09em", textTransform: "uppercase" as const, color: "#5a7085" }}>{field.label}</span>
-                  {field.child}
-                </div>
+            {/* Location */}
+            <div style={{
+              flex: 1, display: "flex", alignItems: "flex-start", gap: 12,
+              padding: "12px 22px",
+              borderRight: isMobile ? "none" : "1px solid #D6E4EA",
+              borderBottom: isMobile ? "1px solid #D6E4EA" : "none",
+              width: isMobile ? "100%" : "auto",
+            }}
+              onMouseEnter={e => (e.currentTarget as HTMLDivElement).style.background = "#eef9fc"}
+              onMouseLeave={e => (e.currentTarget as HTMLDivElement).style.background = "transparent"}
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1275ad" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, marginTop: 2 }}>
+                <path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z"/><circle cx="12" cy="10" r="3"/>
+              </svg>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontFamily: "Outfit, sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase" as const, color: "#7a8fa0", marginBottom: 3, textAlign: "left" }}>Location</div>
+                <input value={locationInput} onChange={e => setLocationInput(e.target.value)} placeholder="City or auto-detect…"
+                  style={{ border: "none", outline: "none", fontFamily: "inherit", fontSize: 14, fontWeight: 500, color: locationInput ? "#0E1C26" : "#a8bfcc", background: "transparent", width: "100%", padding: 0 }} />
               </div>
-            ))}
+            </div>
+
+            {/* Insurance */}
+            <div style={{
+              flex: 1, display: "flex", alignItems: "flex-start", gap: 12,
+              padding: "12px 22px",
+              borderRight: isMobile ? "none" : "1px solid #D6E4EA",
+              borderBottom: isMobile ? "1px solid #D6E4EA" : "none",
+              width: isMobile ? "100%" : "auto",
+            }}
+              onMouseEnter={e => (e.currentTarget as HTMLDivElement).style.background = "#eef9fc"}
+              onMouseLeave={e => (e.currentTarget as HTMLDivElement).style.background = "transparent"}
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1275ad" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, marginTop: 2 }}>
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </svg>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontFamily: "Outfit, sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase" as const, color: "#7a8fa0", marginBottom: 3, textAlign: "left" }}>Insurance (Optional)</div>
+                <input value={insuranceInput} onChange={e => setInsuranceInput(e.target.value)} placeholder="Select plan…"
+                  style={{ border: "none", outline: "none", fontFamily: "inherit", fontSize: 14, fontWeight: 500, color: insuranceInput ? "#0E1C26" : "#a8bfcc", background: "transparent", width: "100%", padding: 0 }} />
+              </div>
+            </div>
+
+            {/* Min Rating */}
+            <div onMouseDown={e => e.stopPropagation()} style={{
+              display: "flex", alignItems: "flex-start", gap: 12,
+              padding: "12px 22px",
+              position: "relative" as const,
+              borderBottom: isMobile ? "1px solid #D6E4EA" : "none",
+              width: isMobile ? "100%" : "auto",
+            }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1275ad" strokeWidth="1.8" style={{ flexShrink: 0, marginTop: 2 }}>
+                <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
+              </svg>
+              <div style={{ minWidth: 0 }}>
+                <div style={{ fontFamily: "Outfit, sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase" as const, color: "#7a8fa0", marginBottom: 3, textAlign: "left" }}>Min Rating</div>
+                <div onClick={() => setOpenDropdown(openDropdown === "rating" ? null : "rating")}
+                  style={{ display: "flex", alignItems: "center", gap: 6, cursor: "pointer" }}>
+                  <span style={{ fontSize: 14, fontWeight: 500, color: heroRating === "Any" ? "#a8bfcc" : "#0E1C26", whiteSpace: "nowrap" as const }}>
+                    {RATINGS.find(r => r.val === heroRating)?.label ?? "Any Rating"}
+                  </span>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#7a8fa0" strokeWidth="2.5" style={{ flexShrink: 0, transition: "transform .2s", transform: openDropdown === "rating" ? "rotate(180deg)" : "none" }}><polyline points="6,9 12,15 18,9"/></svg>
+                </div>
+                {openDropdown === "rating" && (
+                  <div style={{ position: "absolute" as const, top: "calc(100% + 8px)", left: 0, minWidth: 140, background: "#fff", borderRadius: 16, boxShadow: "0 16px 48px rgba(0,0,0,.13)", border: "1.5px solid #D6E4EA", zIndex: 1000, overflow: "hidden" as const, animation: "dropFade .18s ease" }}>
+                    <div className="dd-scroll" style={{ padding: "8px 0" }}>
+                      {RATINGS.map(r => (
+                        <div key={r.val} className="dd-opt" onClick={() => { setHeroRating(r.val); setMinRating(r.val === "Any" ? 0 : parseFloat(r.val)); setOpenDropdown(null); }}
+                          style={{ padding: "9px 16px", fontSize: 13, cursor: "pointer", display: "flex", alignItems: "center", gap: 8, color: heroRating === r.val ? "#46c4d9" : "#0E1C26", fontWeight: heroRating === r.val ? 700 : 400, background: heroRating === r.val ? "rgba(70,196,217,.08)" : "transparent" }}>
+                          {heroRating === r.val && <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#46c4d9" strokeWidth="3"><polyline points="20,6 9,17 4,12"/></svg>}
+                          {r.label}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
             <button
-              style={{ background: "#32cce0", color: "#fff", border: "none", borderRadius: 13, padding: isMobile ? "14px" : "14px 28px", fontFamily: "Outfit, sans-serif", fontSize: 14.5, fontWeight: 700, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, flexShrink: 0, whiteSpace: "nowrap" as const, transition: "opacity .2s, transform .15s" }}
-              onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.opacity = "0.88"; (e.currentTarget as HTMLButtonElement).style.transform = "translateY(-1px)"; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.opacity = "1"; (e.currentTarget as HTMLButtonElement).style.transform = "none"; }}
+              style={{ background: "#46c4d9", color: "#fff", border: "none", borderRadius: isMobile ? 12 : 100, padding: isMobile ? "14px" : "14px 28px", fontFamily: "Outfit, sans-serif", fontSize: 14.5, fontWeight: 700, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, flexShrink: 0, whiteSpace: "nowrap" as const, transition: "opacity .2s", width: isMobile ? "100%" : "auto", marginTop: isMobile ? 4 : 0 }}
+              onMouseEnter={e => (e.currentTarget as HTMLButtonElement).style.opacity = "0.88"}
+              onMouseLeave={e => (e.currentTarget as HTMLButtonElement).style.opacity = "1"}
             >
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="7"/><line x1="17" y1="17" x2="22" y2="22"/></svg>
               Search
             </button>
           </div>
+          )}
+
+          {/* AI search panel */}
+          {aiMode && (
+          <div style={{ width:"100%", maxWidth:900, background:"white", borderRadius:24, padding:"20px 24px", margin:"0 auto 14px", boxShadow:"0 8px 48px rgba(16,117,173,0.13), 0 0 0 1px rgba(16,117,173,0.08)" }}>
+            <div style={{ fontFamily:"Outfit, sans-serif", fontSize:11, fontWeight:700, letterSpacing:"0.1em", textTransform:"uppercase" as const, color:"#1275ad", marginBottom:10, display:"flex", alignItems:"center", gap:6 }}>
+              ✦ Describe what you&apos;re looking for in plain language
+            </div>
+            <div style={{ display:"flex", gap:10, alignItems:"flex-end" }}>
+              <textarea value={aiQuery} onChange={e=>setAiQuery(e.target.value)} autoFocus
+                placeholder={`e.g. I need a ${singular.toLowerCase()} near downtown who accepts Aetna and has availability this week…`}
+                rows={2}
+                style={{ flex:1, border:"1.5px solid #D6E4EA", borderRadius:12, padding:"14px 18px", fontFamily:"inherit", fontSize:14, color:"#0E1C26", resize:"none", outline:"none", lineHeight:1.55, minHeight:56, boxSizing:"border-box" as const, transition:"border-color .2s" }}
+                onFocus={e=>e.target.style.borderColor="#46c4d9"}
+                onBlur={e=>e.target.style.borderColor="#D6E4EA"}
+                onKeyDown={e=>{ if(e.key==="Enter"&&!e.shiftKey){ e.preventDefault(); document.getElementById("providers-section")?.scrollIntoView({ behavior:"smooth" }); } }} />
+              <button
+                style={{ background:"linear-gradient(135deg,#46c4d9,#1275ad)", color:"white", border:"none", borderRadius:12, padding:"14px 22px", fontFamily:"Outfit, sans-serif", fontSize:14, fontWeight:700, cursor:"pointer", display:"flex", alignItems:"center", gap:7, whiteSpace:"nowrap" as const, transition:"opacity .2s" }}
+                onClick={() => document.getElementById("providers-section")?.scrollIntoView({ behavior:"smooth" })}>
+                ✦ Search with AI
+              </button>
+            </div>
+            <div style={{ display:"flex", flexWrap:"wrap", gap:8, marginTop:12 }}>
+              {[
+                `${singular} near downtown`,
+                `${singular} accepting new patients`,
+                `${singular} open on weekends`,
+                `${singular} with 4.5+ stars`,
+              ].map(s => (
+                <span key={s} onClick={()=>setAiQuery(s)}
+                  style={{ fontSize:12, color:"#1275ad", background:"rgba(18,117,173,0.06)", border:"1px solid rgba(18,117,173,0.15)", borderRadius:100, padding:"5px 13px", cursor:"pointer", fontWeight:500, transition:"all .18s" }}
+                  onMouseEnter={e=>{(e.currentTarget as HTMLSpanElement).style.background="#1275ad";(e.currentTarget as HTMLSpanElement).style.color="white";}}
+                  onMouseLeave={e=>{(e.currentTarget as HTMLSpanElement).style.background="rgba(18,117,173,0.06)";(e.currentTarget as HTMLSpanElement).style.color="#1275ad";}}>
+                  {s}
+                </span>
+              ))}
+            </div>
+          </div>
+          )}
 
           {/* Filter chips */}
           <div style={{ display: "flex", alignItems: "center", gap: 10, justifyContent: "center", flexWrap: "wrap", marginTop: 14, marginBottom: 24 }}>
