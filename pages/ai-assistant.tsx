@@ -541,60 +541,57 @@ export default function AiAssistantPage() {
             <div style={{ maxWidth:960, margin:"0 auto", padding:isMobile?0:"0 20px" }}>
               {msgs.map((msg, i) => (
                 <div key={i} style={{ marginBottom:20 }}>
-                  <div style={{ display:"flex", justifyContent:msg.role==="user"?"flex-end":"flex-start", gap:10, alignItems:"flex-end" }}>
+                  {/* ── Message row: avatar + unified bubble ── */}
+                  <div style={{ display:"flex", justifyContent:msg.role==="user"?"flex-end":"flex-start", gap:10, alignItems:"flex-start" }}>
                     {msg.role === "assistant" && <AiAvatar />}
+
+                    {/* Unified bubble — text + cards combined */}
                     <div style={{
-                      maxWidth:isMobile?"85%":"70%",
+                      maxWidth:isMobile?"88%":"72%",
                       background:msg.role==="user"?`linear-gradient(135deg, ${C.teal}, ${C.tealDk})`:msg.emergency?C.redLt:C.white,
                       color:msg.role==="user"?"#fff":msg.emergency?C.red:C.text,
                       borderRadius:msg.role==="user"?"20px 20px 4px 20px":"20px 20px 20px 4px",
                       padding:isMobile?"13px 16px":"15px 22px",
                       fontSize:isMobile?13.5:14, lineHeight:1.75,
                       border:msg.emergency?`1px solid ${C.redBd}`:msg.role==="assistant"?`1px solid ${C.border}`:"none",
-                      whiteSpace:"pre-wrap",
                       boxShadow:msg.role==="user"?"0 3px 14px rgba(90,202,214,.22)":"0 1px 6px rgba(0,0,0,.04)",
-                    }}>{msg.text}</div>
+                    }}>
+                      {/* Response text */}
+                      <div style={{ whiteSpace:"pre-wrap" }}>{msg.text}</div>
+
+                      {/* Provider cards inside the bubble */}
+                      {(msg.providers?.length ?? 0) > 0 && (
+                        <div style={{ marginTop:14, borderTop:`1px solid ${C.border}`, paddingTop:12 }}>
+                          <p style={{ fontSize:10, color:C.textSm, marginBottom:8, fontWeight:700, letterSpacing:.6 }}>SUGGESTED PROVIDERS</p>
+                          <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
+                            {msg.providers!.map(p => (
+                              <div key={p.id} style={{ border:`1px solid ${C.teal}30`, borderRadius:12 }}>
+                                <ProviderMiniCard provider={p} onOpen={setSelectedProvider} />
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Clinic cards inside the bubble */}
+                      {(msg.clinics?.length ?? 0) > 0 && (
+                        <div style={{ marginTop:14, borderTop:`1px solid ${C.border}`, paddingTop:12 }}>
+                          <p style={{ fontSize:10, color:C.textSm, marginBottom:8, fontWeight:700, letterSpacing:.6 }}>RECOMMENDED CLINICS</p>
+                          <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
+                            {msg.clinics!.map(clinic => (
+                              <div key={clinic.id} style={{ border:`1px solid ${C.teal}30`, borderRadius:12 }}>
+                                <ClinicMiniCard clinic={clinic} onContact={() => setFacilitatorModal(true)} />
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
 
-                  {msg.role === "assistant" && i > 0 && (
-                    <div style={{ marginLeft:isMobile?0:48, marginTop:6, display:"flex", gap:4, alignItems:"center" }}>
-                      <button
-                        onClick={() => setRatings(r => ({ ...r, [i]: "up" }))}
-                        title="Helpful"
-                        style={{ background:"none", border:`1px solid ${ratings[i]==="up"?C.teal:C.borderLt}`, borderRadius:8, padding:"4px 8px", cursor:"pointer", display:"flex", alignItems:"center", gap:4, color:ratings[i]==="up"?C.teal:C.textSm, transition:"all .15s", fontSize:11, fontWeight:ratings[i]==="up"?700:400 }}>
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill={ratings[i]==="up"?C.teal:"none"} stroke={ratings[i]==="up"?C.teal:C.textSm} strokeWidth="2"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
-                        {ratings[i]==="up" && <span>Helpful</span>}
-                      </button>
-                      <button
-                        onClick={() => { setRatings(r => ({ ...r, [i]: "down" })); setFeedbackSubmitted(false); setFeedbackText(""); setFeedbackModal({ open: true, msgIdx: i }); }}
-                        title="Not helpful"
-                        style={{ background:"none", border:`1px solid ${ratings[i]==="down"?C.red:C.borderLt}`, borderRadius:8, padding:"4px 8px", cursor:"pointer", display:"flex", alignItems:"center", gap:4, color:ratings[i]==="down"?C.red:C.textSm, transition:"all .15s", fontSize:11, fontWeight:ratings[i]==="down"?700:400 }}>
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill={ratings[i]==="down"?C.red:"none"} stroke={ratings[i]==="down"?C.red:C.textSm} strokeWidth="2"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3H10z"/><path d="M17 2h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"/></svg>
-                        {ratings[i]==="down" && <span>Not helpful</span>}
-                      </button>
-                    </div>
-                  )}
-
-                  {(msg.providers?.length ?? 0) > 0 && (
-                    <div style={{ marginTop:12, marginLeft:isMobile?0:48 }}>
-                      <p style={{ fontSize:10, color:C.textSm, marginBottom:8, fontWeight:700, letterSpacing:.6 }}>SUGGESTED PROVIDERS</p>
-                      <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
-                        {msg.providers!.map(p => <ProviderMiniCard key={p.id} provider={p} onOpen={setSelectedProvider} />)}
-                      </div>
-                    </div>
-                  )}
-
-                  {(msg.clinics?.length ?? 0) > 0 && (
-                    <div style={{ marginTop:12, marginLeft:isMobile?0:48 }}>
-                      <p style={{ fontSize:10, color:C.textSm, marginBottom:8, fontWeight:700, letterSpacing:.6 }}>RECOMMENDED CLINICS</p>
-                      <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
-                        {msg.clinics!.map(clinic => <ClinicMiniCard key={clinic.id} clinic={clinic} onContact={() => setFacilitatorModal(true)} />)}
-                      </div>
-                    </div>
-                  )}
-
+                  {/* International CTA — stays outside the bubble */}
                   {msg.role === "assistant" && msg.showIntlCTA && (
-                    <div className="fade-up" style={{ marginTop:12, marginLeft:isMobile?0:48, background:`linear-gradient(120deg, ${C.purpleLt}, ${C.tealLt})`, border:`1px solid ${C.teal}30`, borderRadius:16, padding:"16px 18px", display:"flex", gap:12, alignItems:"center", flexWrap:"wrap" }}>
+                    <div className="fade-up" style={{ marginTop:8, marginLeft:isMobile?0:48, background:`linear-gradient(120deg, ${C.purpleLt}, ${C.tealLt})`, border:`1px solid ${C.teal}30`, borderRadius:16, padding:"16px 18px", display:"flex", gap:12, alignItems:"center", flexWrap:"wrap" }}>
                       <div style={{ flex:1, minWidth: isMobile ? 0 : 180 }}>
                         <div style={{ fontWeight:700, fontSize:13, marginBottom:3, color:C.text }}>Looking for care outside your country?</div>
                         <div style={{ fontSize:12.5, color:C.textMd }}>We can connect you with a medical coordinator who specializes in international care.</div>
@@ -603,6 +600,42 @@ export default function AiAssistantPage() {
                         style={{ background:C.teal, color:"#fff", border:"none", borderRadius:22, padding:"9px 18px", fontWeight:700, fontSize:13, cursor:"pointer", fontFamily:"inherit", whiteSpace:"nowrap" }}>
                         Talk to a Facilitator
                       </button>
+                    </div>
+                  )}
+
+                  {/* Thumbs up/down + suggestion chips — below the combined block */}
+                  {msg.role === "assistant" && i > 0 && (
+                    <div style={{ marginLeft:isMobile?0:48, marginTop:6, display:"flex", gap:5, alignItems:"center", flexWrap:"nowrap" }}>
+                      {/* Thumbs up */}
+                      <button
+                        onClick={() => setRatings(r => ({ ...r, [i]: "up" }))}
+                        title="Helpful"
+                        style={{ background:"none", border:`1px solid ${ratings[i]==="up"?C.teal:C.borderLt}`, borderRadius:8, padding:"4px 8px", cursor:"pointer", display:"flex", alignItems:"center", gap:4, color:ratings[i]==="up"?C.teal:C.textSm, transition:"all .15s", fontSize:11, fontWeight:ratings[i]==="up"?700:400 }}>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill={ratings[i]==="up"?C.teal:"none"} stroke={ratings[i]==="up"?C.teal:C.textSm} strokeWidth="2"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+                        {ratings[i]==="up" ? <span>Helpful</span> : null}
+                      </button>
+                      {/* Thumbs down */}
+                      <button
+                        onClick={() => { setRatings(r => ({ ...r, [i]: "down" })); setFeedbackSubmitted(false); setFeedbackText(""); setFeedbackModal({ open: true, msgIdx: i }); }}
+                        title="Not helpful"
+                        style={{ background:"none", border:`1px solid ${ratings[i]==="down"?C.red:C.borderLt}`, borderRadius:8, padding:"4px 8px", cursor:"pointer", display:"flex", alignItems:"center", gap:4, color:ratings[i]==="down"?C.red:C.textSm, transition:"all .15s", fontSize:11, fontWeight:ratings[i]==="down"?700:400 }}>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill={ratings[i]==="down"?C.red:"none"} stroke={ratings[i]==="down"?C.red:C.textSm} strokeWidth="2"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3H10z"/><path d="M17 2h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"/></svg>
+                        {ratings[i]==="down" ? <span>Not helpful</span> : null}
+                      </button>
+                      {/* Divider */}
+                      <div style={{ width:1, height:16, background:C.borderLt, flexShrink:0 }}/>
+                      {/* Suggestion chips — text only */}
+                      {[
+                        { label:"Recommend a provider",              query:"Recommend a provider" },
+                        { label:"Recommend an international clinic", query:"international clinic recommendation" },
+                      ].map(chip => (
+                        <button key={chip.label} onClick={() => send(chip.query)} disabled={loading}
+                          style={{ background:"none", border:`1px solid ${C.borderLt}`, borderRadius:14, padding:"4px 11px", fontSize:11, color:C.textSm, cursor:"pointer", fontFamily:"inherit", transition:"all .15s", opacity:loading?.5:1, whiteSpace:"nowrap" }}
+                          onMouseEnter={e=>{const b=e.currentTarget;b.style.borderColor=C.teal;b.style.color=C.teal;b.style.background=C.tealLt;}}
+                          onMouseLeave={e=>{const b=e.currentTarget;b.style.borderColor=C.borderLt;b.style.color=C.textSm;b.style.background="none";}}>
+                          {chip.label}
+                        </button>
+                      ))}
                     </div>
                   )}
                 </div>
@@ -633,23 +666,6 @@ export default function AiAssistantPage() {
                   onMouseEnter={e=>(e.currentTarget as HTMLButtonElement).style.background=C.tealDk}
                   onMouseLeave={e=>(e.currentTarget as HTMLButtonElement).style.background=C.teal}>
                   Send
-                </button>
-              </div>
-              {/* Quick-action chips */}
-              <div style={{ display:"flex", gap:6, marginTop:8, flexWrap:"wrap", justifyContent:"center" }}>
-                <button onClick={() => send("Recommend a provider")} disabled={loading}
-                  style={{ background:"none", border:`1px solid ${C.borderLt}`, borderRadius:14, padding:"4px 11px", fontSize:11.5, color:C.textSm, cursor:"pointer", fontFamily:"inherit", display:"flex", alignItems:"center", gap:4, transition:"all .15s", opacity: loading ? .5 : 1 }}
-                  onMouseEnter={e=>{const b=e.currentTarget;b.style.borderColor=C.teal;b.style.color=C.teal;b.style.background=C.tealLt;}}
-                  onMouseLeave={e=>{const b=e.currentTarget;b.style.borderColor=C.borderLt;b.style.color=C.textSm;b.style.background="none";}}>
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                  Recommend a provider
-                </button>
-                <button onClick={() => send("international clinic recommendation")} disabled={loading}
-                  style={{ background:"none", border:`1px solid ${C.borderLt}`, borderRadius:14, padding:"4px 11px", fontSize:11.5, color:C.textSm, cursor:"pointer", fontFamily:"inherit", display:"flex", alignItems:"center", gap:4, transition:"all .15s", opacity: loading ? .5 : 1 }}
-                  onMouseEnter={e=>{const b=e.currentTarget;b.style.borderColor=C.teal;b.style.color=C.teal;b.style.background=C.tealLt;}}
-                  onMouseLeave={e=>{const b=e.currentTarget;b.style.borderColor=C.borderLt;b.style.color=C.textSm;b.style.background="none";}}>
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                  Recommend an international clinic
                 </button>
               </div>
               <p style={{ fontSize:10, color:C.textSm, textAlign:"center", marginTop:6 }}>For informational purposes only. Not a substitute for professional medical advice.</p>
