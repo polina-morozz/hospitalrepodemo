@@ -334,7 +334,7 @@ export default function NYAddictionMedicinePage() {
             <section style={{ marginBottom:48 }}>
               <div style={{ background:"linear-gradient(135deg,rgba(220,50,50,.06),rgba(220,50,50,.03))", border:"1.5px solid rgba(220,50,50,.2)", borderRadius:16, padding:"24px 28px" }}>
                 <div style={{ fontFamily:"Outfit, sans-serif", fontWeight:800, fontSize:16, color:"#c0392b", marginBottom:12 }}>Crisis Resources &amp; Safety Information</div>
-                <p style={{ fontSize:14, color:"#5a7085", lineHeight:1.7, marginBottom:14 }}>If you or someone you love is in crisis, call or text <strong>988</strong> for the Suicide and Crisis Lifeline. For substance use specifically, SAMHSA's National Helpline is available at <strong>1-800-662-4357 (HELP)</strong>. Both services are free, confidential, and available 24/7.</p>
+                <p style={{ fontSize:14, color:"#5a7085", lineHeight:1.7, marginBottom:14 }}>If you or someone you love is in crisis, call or text <strong>988</strong> for the Suicide and Crisis Lifeline. For substance use specifically, SAMHSA&apos;s National Helpline is available at <strong>1-800-662-4357 (HELP)</strong>. Both services are free, confidential, and available 24/7.</p>
                 <p style={{ fontSize:14, color:"#5a7085", lineHeight:1.7 }}>For New York City resources, call <strong>NYC Well at 1-888-NYC-WELL (692-9355)</strong> — free, multilingual, 24/7. The <strong>NY OASAS provider directory</strong> at findaddictiontreatment.ny.gov lists licensed treatment providers by borough and county.</p>
               </div>
             </section>
