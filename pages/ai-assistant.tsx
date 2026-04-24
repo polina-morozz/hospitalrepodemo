@@ -414,6 +414,7 @@ export default function AiAssistantPage() {
   const [feedbackModal, setFeedbackModal] = useState<{ open: boolean; msgIdx: number | null }>({ open: false, msgIdx: null });
   const [feedbackText, setFeedbackText] = useState("");
   const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
+  const [copiedIdx, setCopiedIdx] = useState<number | null>(null);
 
   const AiAvatar = () => (
     <div style={{ width:38, height:38, borderRadius:14, background:`linear-gradient(135deg, ${C.tealLt}, ${C.tealBg})`, border:`1.5px solid ${C.teal}25`, flexShrink:0, overflow:"hidden", display:"flex", alignItems:"center", justifyContent:"center", padding:6 }}>
@@ -528,12 +529,21 @@ export default function AiAssistantPage() {
                 {activeChatId ? (chatHistory.find(c => c.id === activeChatId)?.title || "Chat") : "New Chat"}
               </div>
             </div>
-            <button onClick={handleNewChat} title="New chat"
-              style={{ width:30, height:30, borderRadius:8, border:`1.5px solid ${C.border}`, background:C.offWhite, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", transition:"all .15s" }}
-              onMouseEnter={e=>{(e.currentTarget as HTMLButtonElement).style.borderColor=C.teal;(e.currentTarget as HTMLButtonElement).style.background=C.tealLt;}}
-              onMouseLeave={e=>{(e.currentTarget as HTMLButtonElement).style.borderColor=C.border;(e.currentTarget as HTMLButtonElement).style.background=C.offWhite;}}>
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={C.teal} strokeWidth="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            </button>
+            {!isMobile && (
+              <div style={{ display:"flex", gap:6, flexShrink:0 }}>
+                {[
+                  { label:"Recommend a provider",  query:"Recommend a provider" },
+                  { label:"Recommend an international clinic",   query:"international clinic recommendation" },
+                ].map(chip => (
+                  <button key={chip.label} onClick={() => send(chip.query)} disabled={loading}
+                    style={{ background:"none", border:`1px solid ${C.borderLt}`, borderRadius:16, padding:"4px 11px", fontSize:11.5, color:C.textSm, cursor:"pointer", fontFamily:"inherit", fontWeight:500, whiteSpace:"nowrap", transition:"all .15s", opacity:loading?.5:1 }}
+                    onMouseEnter={e=>{const b=e.currentTarget;b.style.borderColor=C.teal;b.style.color=C.teal;b.style.background=C.tealLt;}}
+                    onMouseLeave={e=>{const b=e.currentTarget;b.style.borderColor=C.borderLt;b.style.color=C.textSm;b.style.background="none";}}>
+                    {chip.label}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Messages */}
@@ -603,39 +613,32 @@ export default function AiAssistantPage() {
                     </div>
                   )}
 
-                  {/* Thumbs up/down + suggestion chips — below the combined block */}
+                  {/* Thumbs + copy — below the combined block */}
                   {msg.role === "assistant" && i > 0 && (
                     <div style={{ marginLeft:isMobile?0:48, marginTop:6, display:"flex", gap:5, alignItems:"center", flexWrap:"nowrap" }}>
-                      {/* Thumbs up */}
                       <button
                         onClick={() => setRatings(r => ({ ...r, [i]: "up" }))}
                         title="Helpful"
-                        style={{ background:"none", border:`1px solid ${ratings[i]==="up"?C.teal:C.borderLt}`, borderRadius:8, padding:"4px 8px", cursor:"pointer", display:"flex", alignItems:"center", gap:4, color:ratings[i]==="up"?C.teal:C.textSm, transition:"all .15s", fontSize:11, fontWeight:ratings[i]==="up"?700:400 }}>
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill={ratings[i]==="up"?C.teal:"none"} stroke={ratings[i]==="up"?C.teal:C.textSm} strokeWidth="2"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+                        style={{ background:"none", border:`1px solid ${ratings[i]==="up"?C.teal:C.borderLt}`, borderRadius:8, padding:"6px 10px", cursor:"pointer", display:"flex", alignItems:"center", gap:5, color:ratings[i]==="up"?C.teal:C.textSm, transition:"all .15s", fontSize:12.5, fontWeight:ratings[i]==="up"?700:400 }}>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill={ratings[i]==="up"?C.teal:"none"} stroke={ratings[i]==="up"?C.teal:C.textSm} strokeWidth="2"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
                         {ratings[i]==="up" ? <span>Helpful</span> : null}
                       </button>
-                      {/* Thumbs down */}
                       <button
                         onClick={() => { setRatings(r => ({ ...r, [i]: "down" })); setFeedbackSubmitted(false); setFeedbackText(""); setFeedbackModal({ open: true, msgIdx: i }); }}
                         title="Not helpful"
-                        style={{ background:"none", border:`1px solid ${ratings[i]==="down"?C.red:C.borderLt}`, borderRadius:8, padding:"4px 8px", cursor:"pointer", display:"flex", alignItems:"center", gap:4, color:ratings[i]==="down"?C.red:C.textSm, transition:"all .15s", fontSize:11, fontWeight:ratings[i]==="down"?700:400 }}>
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill={ratings[i]==="down"?C.red:"none"} stroke={ratings[i]==="down"?C.red:C.textSm} strokeWidth="2"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3H10z"/><path d="M17 2h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"/></svg>
+                        style={{ background:"none", border:`1px solid ${ratings[i]==="down"?C.red:C.borderLt}`, borderRadius:8, padding:"6px 10px", cursor:"pointer", display:"flex", alignItems:"center", gap:5, color:ratings[i]==="down"?C.red:C.textSm, transition:"all .15s", fontSize:12.5, fontWeight:ratings[i]==="down"?700:400 }}>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill={ratings[i]==="down"?C.red:"none"} stroke={ratings[i]==="down"?C.red:C.textSm} strokeWidth="2"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3H10z"/><path d="M17 2h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"/></svg>
                         {ratings[i]==="down" ? <span>Not helpful</span> : null}
                       </button>
-                      {/* Divider */}
-                      <div style={{ width:1, height:16, background:C.borderLt, flexShrink:0 }}/>
-                      {/* Suggestion chips — text only */}
-                      {[
-                        { label:"Recommend a provider",              query:"Recommend a provider" },
-                        { label:"Recommend an international clinic", query:"international clinic recommendation" },
-                      ].map(chip => (
-                        <button key={chip.label} onClick={() => send(chip.query)} disabled={loading}
-                          style={{ background:"none", border:`1px solid ${C.borderLt}`, borderRadius:14, padding:"4px 11px", fontSize:11, color:C.textSm, cursor:"pointer", fontFamily:"inherit", transition:"all .15s", opacity:loading?.5:1, whiteSpace:"nowrap" }}
-                          onMouseEnter={e=>{const b=e.currentTarget;b.style.borderColor=C.teal;b.style.color=C.teal;b.style.background=C.tealLt;}}
-                          onMouseLeave={e=>{const b=e.currentTarget;b.style.borderColor=C.borderLt;b.style.color=C.textSm;b.style.background="none";}}>
-                          {chip.label}
-                        </button>
-                      ))}
+                      <div style={{ width:1, height:18, background:C.borderLt, flexShrink:0 }}/>
+                      <button
+                        onClick={() => { navigator.clipboard.writeText(msg.text); setCopiedIdx(i); setTimeout(()=>setCopiedIdx(null), 2000); }}
+                        title="Copy response"
+                        style={{ background:"none", border:`1px solid ${copiedIdx===i?C.teal:C.borderLt}`, borderRadius:8, padding:"6px 10px", cursor:"pointer", display:"flex", alignItems:"center", gap:5, color:copiedIdx===i?C.teal:C.textSm, transition:"all .15s", fontSize:12.5, fontWeight:copiedIdx===i?700:400 }}>
+                        {copiedIdx===i
+                          ? <><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={C.teal} strokeWidth="2.5"><polyline points="20,6 9,17 4,12"/></svg><span>Copied!</span></>
+                          : <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={C.textSm} strokeWidth="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>}
+                      </button>
                     </div>
                   )}
                 </div>

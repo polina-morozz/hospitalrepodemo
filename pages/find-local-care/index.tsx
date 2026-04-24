@@ -109,6 +109,101 @@ const PROCEDURE_CHIPS = [
   { icon:<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#46c4d9" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{flexShrink:0}}><circle cx="12" cy="12" r="10"/><path d="M12 2L9.5 9.5 2 12l7.5 2.5L12 22l2.5-7.5L22 12l-7.5-2.5z" fill="#46c4d9" stroke="none"/></svg>, name:"Colonoscopy",       count:"310" },
 ];
 
+// ─── SEO LINK GRID DATA ───────────────────────────────────────────────────────
+const TOP_CITIES = ["New York","Los Angeles","Chicago","Houston","Miami"];
+
+const SEO_SPECIALTIES: { label:string; slug:string; cityPages:Record<string,string> }[] = [
+  { label:"Addiction Medicine Specialist", slug:"addiction-medicine-specialist", cityPages:{"New York":"new-york-ny","Los Angeles":"los-angeles-ca"} },
+  { label:"Acupuncturist",   slug:"acupuncturist",   cityPages:{} },
+  { label:"Cardiologist",    slug:"cardiologist",    cityPages:{} },
+  { label:"Dentist",         slug:"dentist",         cityPages:{} },
+  { label:"Dermatologist",   slug:"dermatologist",   cityPages:{} },
+  { label:"Family Doctor",   slug:"family-doctor",   cityPages:{} },
+  { label:"Neurologist",     slug:"neurologist",     cityPages:{} },
+  { label:"OB-GYN",          slug:"ob-gyn",          cityPages:{} },
+  { label:"Ophthalmologist", slug:"ophthalmologist", cityPages:{} },
+  { label:"Orthopedist",     slug:"orthopedist",     cityPages:{} },
+  { label:"Pediatrician",    slug:"pediatrician",    cityPages:{} },
+  { label:"Psychiatrist",    slug:"psychiatrist",    cityPages:{} },
+  { label:"Urgent Care",     slug:"urgent-care",     cityPages:{} },
+];
+
+const SEO_PROCEDURES = [
+  "Annual Physical","Blood Test","Colonoscopy","Echocardiogram",
+  "Eye Exam","Flu Shot","Hip Replacement","Knee Replacement",
+  "MRI Scan","Skin Check","Teeth Cleaning","Wisdom Tooth Removal",
+];
+
+// ─── SEO LINK GRID ────────────────────────────────────────────────────────────
+function SeoLinkGrid({ onProcedureClick }: { onProcedureClick?: (proc: string) => void }) {
+  const router = useRouter();
+  const isMobile = useIsMobile();
+  const [tab, setTab] = useState<"specialty"|"procedure">("specialty");
+  const [showAll, setShowAll] = useState(false);
+
+  const INITIAL_COUNT = 8;
+
+  return (
+    <section style={{ padding:isMobile?"48px 0 40px":"56px 0 48px", borderTop:`1px solid ${C.borderLt}`, marginTop:isMobile?32:48 }}>
+      <div style={{ fontFamily:"Outfit, sans-serif", fontSize:11, fontWeight:700, letterSpacing:"0.14em", textTransform:"uppercase" as const, color:C.blue, marginBottom:8 }}>
+        Explore by Location
+      </div>
+      <div style={{ display:"flex", alignItems:isMobile?"flex-start":"center", justifyContent:"space-between", flexDirection:isMobile?"column":"row" as const, gap:16, marginBottom:24 }}>
+        <h2 style={{ fontFamily:"Outfit, sans-serif", fontSize:isMobile?20:26, fontWeight:700, color:"#071e34", margin:0, letterSpacing:"-0.02em" }}>
+          Find Care Near You
+        </h2>
+        <div style={{ display:"flex", gap:0, background:"#f0f4f6", borderRadius:10, padding:3 }}>
+          {(["specialty","procedure"] as const).map(t => (
+            <button key={t} onClick={() => setTab(t)}
+              style={{ padding:"7px 18px", border:"none", borderRadius:8, background:tab===t?"#fff":"transparent", fontWeight:tab===t?700:400, fontSize:12.5, cursor:"pointer", color:tab===t?"#071e34":C.textSm, boxShadow:tab===t?"0 1px 4px rgba(0,0,0,.08)":"none", fontFamily:"inherit", transition:"all .15s", whiteSpace:"nowrap" as const }}>
+              By {t === "specialty" ? "Specialty" : "Procedure"}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {(() => {
+        const items = tab === "specialty" ? SEO_SPECIALTIES : SEO_PROCEDURES.map(p => ({ label:p, slug:p, cityPages:{} as Record<string,string> }));
+        const visible = isMobile && !showAll ? items.slice(0, INITIAL_COUNT) : items;
+        return (
+          <>
+            <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr 1fr":"repeat(5,1fr)", gap:"20px 28px" }}>
+              {visible.map(item => (
+                <div key={"label" in item ? item.label : item}>
+                  <div style={{ fontWeight:700, fontSize:12.5, color:"#071e34", marginBottom:7, lineHeight:1.3 }}>{"label" in item ? item.label : item}</div>
+                  <div style={{ display:"flex", flexDirection:"column" as const, gap:5 }}>
+                    {TOP_CITIES.map(city => {
+                      const sp = tab === "specialty" ? item as typeof SEO_SPECIALTIES[0] : null;
+                      const href = sp?.cityPages[city] ? `/find-local-care/${sp.slug}/${sp.cityPages[city]}` : sp ? `/find-local-care/${sp.slug}` : null;
+                      return (
+                        <button key={city}
+                          onClick={() => href ? router.push(href) : onProcedureClick ? onProcedureClick(("label" in item ? item.label : item) as string) : router.push("/find-local-care")}
+                          style={{ background:"none", border:"none", cursor:"pointer", fontFamily:"inherit", fontSize:12, color:C.blue, padding:0, textAlign:"left" as const, lineHeight:1.5 }}
+                          onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.textDecoration="underline"; }}
+                          onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.textDecoration="none"; }}>
+                          in {city}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
+            {isMobile && items.length > INITIAL_COUNT && (
+              <button onClick={() => setShowAll(s => !s)}
+                style={{ marginTop:20, width:"100%", padding:"11px 0", border:`1.5px solid ${C.borderLt}`, borderRadius:10, background:"#fff", fontFamily:"inherit", fontSize:13, fontWeight:600, color:C.blue, cursor:"pointer", transition:"all .15s" }}
+                onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.borderColor=C.teal; (e.currentTarget as HTMLButtonElement).style.color=C.teal; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.borderColor=C.borderLt; (e.currentTarget as HTMLButtonElement).style.color=C.blue; }}>
+                {showAll ? "Show less" : `Show all ${items.length} ${tab === "specialty" ? "specialties" : "procedures"}`}
+              </button>
+            )}
+          </>
+        );
+      })()}
+    </section>
+  );
+}
+
 // ─── PROVIDER CARD ────────────────────────────────────────────────────────────
 function ProviderCard({ provider, bookmarks, toggleBookmark, isLoggedIn }: ProviderCardProps) {
   const router = useRouter();
@@ -728,6 +823,8 @@ fits your life
                 </div>
               </div>
 
+              <SeoLinkGrid onProcedureClick={(proc) => { setSearchQuery(proc); setShowResults(true); }} />
+
               {/* ─── WHY US DARK SECTION ────────────────────────────────────── */}
               <section style={{
                 background: "#071e34",
@@ -1037,6 +1134,8 @@ fits your life
                   </div>
                 )}
               </div>
+
+              <SeoLinkGrid onProcedureClick={(proc) => setSearchQuery(proc)} />
             </>
           )}
         </div>

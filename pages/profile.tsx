@@ -5,7 +5,7 @@ import useIsMobile from "@/lib/hooks/useIsMobile";
 
 // ─── PROFILE PAGE ─────────────────────────────────────────────────────────────
 export default function ProfilePage() {
-  const [profile, setProfile] = useState({ firstName:"John", lastName:"Doe", email:"john.doe@gmail.com", phone:"+1 212-555-0100", city:"New York", state:"NY", zip:"10001", dob:"1990-05-15", insurance:"Aetna" });
+  const [profile, setProfile] = useState({ firstName:"John", lastName:"Doe", email:"john.doe@gmail.com", phone:"+1 212-555-0100", dob:"1990-05-15", insurance:"Aetna" });
   const [saved, setSaved] = useState(false);
   const [newEmail, setNewEmail] = useState("");
   const [emailSent, setEmailSent] = useState(false);
@@ -88,16 +88,6 @@ export default function ProfilePage() {
               )}
             </div>
             <Field label="Phone Number" field="phone" type="tel" />
-          </div>
-
-          {/* Location */}
-          <div style={{ background:C.white, border:`1px solid ${C.border}`, borderRadius:16, padding:"24px", marginBottom:18, boxShadow:"0 1px 6px rgba(0,0,0,.04)" }}>
-            <h2 style={{ fontWeight:700, fontSize:16, marginBottom:18 }}>Location</h2>
-            <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"2fr 1fr 1fr", gap:"0 20px" }}>
-              <Field label="City" field="city" />
-              <Field label="State" field="state" />
-              <Field label="ZIP Code" field="zip" />
-            </div>
           </div>
 
           {/* Save */}

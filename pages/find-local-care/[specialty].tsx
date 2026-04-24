@@ -92,6 +92,7 @@ interface SpecialtyContent {
   types?: string;
   credentials?: { region: string; body: string }[];
   evidenceBase?: string[];
+  evidenceStats?: { value: string; label: string }[];
   relatedSpecialties?: string[];
   sources?: string[];
 }
@@ -150,6 +151,13 @@ const SPECIALTY_DATA: Record<string, SpecialtyContent> = {
       "The volume and quality of acupuncture research has expanded substantially over the past decade. A 2025 systematic review published in Integrative Medicine Research analyzed 862 systematic reviews and meta-analyses covering 184 medical conditions between 2017 and 2022. The review found evidence of positive effect for ten conditions — including chronic pain, knee osteoarthritis, migraines, and cancer-related fatigue — with potential positive effect across 82 additional indications.",
       "A separate global scientometric analysis tracking 9,340 acupuncture publications from 1980 to 2023 found publication volume growing at roughly six times the rate seen before 2013, driven by research collaboration across more than 60 countries. Harvard University held the highest centrality score in pain-specific acupuncture research globally.",
       "These figures do not mean acupuncture works for every condition. Evidence quality remains variable and for some indications only low-certainty conclusions are available. Honest clinical conversations about realistic outcomes are something Hospital.com encourages patients to have with any provider they book.",
+    ],
+    evidenceStats: [
+      { value: "862", label: "systematic reviews analyzed" },
+      { value: "184", label: "medical conditions covered" },
+      { value: "10", label: "conditions with positive effect" },
+      { value: "9,340", label: "publications tracked (1980–2023)" },
+      { value: "60+", label: "countries collaborating" },
     ],
     relatedSpecialties: [
       "Naturopathic Doctors",
@@ -300,6 +308,26 @@ function ProviderCard({ provider }: { provider: Provider }) {
           View Profile
         </button>
       </div>
+    </div>
+  );
+}
+
+// ─── EXPAND ROW ───────────────────────────────────────────────────────────────
+function ExpandRow({ title, children, dark = false }: { title: string; children: React.ReactNode; dark?: boolean }) {
+  const [open, setOpen] = useState(false);
+  const border = dark ? (open ? "rgba(50,204,224,.4)" : "rgba(255,255,255,.14)") : (open ? "#cce4f0" : "#e8eef2");
+  const headerBg = dark ? (open ? "rgba(50,204,224,.08)" : "rgba(255,255,255,.04)") : (open ? "#f0fafe" : "none");
+  const titleColor = dark ? (open ? "#32cce0" : "rgba(255,255,255,.85)") : (open ? "#1075ad" : "#071e34");
+  const chevron = dark ? (open ? "#32cce0" : "rgba(255,255,255,.4)") : (open ? "#1075ad" : "#5a7085");
+  const divider = dark ? "rgba(255,255,255,.1)" : "#e8eef2";
+  return (
+    <div style={{ border:`1px solid ${border}`, borderRadius:10, overflow:"hidden", transition:"border-color .2s" }}>
+      <button onClick={() => setOpen(o => !o)}
+        style={{ width:"100%", display:"flex", alignItems:"center", justifyContent:"space-between", padding:"12px 16px", background:headerBg, border:"none", cursor:"pointer", fontFamily:"Outfit, sans-serif", fontWeight:600, fontSize:13.5, color:titleColor, textAlign:"left" as const, gap:8, transition:"all .2s" }}>
+        {title}
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={chevron} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink:0, transition:"transform .2s", transform:open?"rotate(180deg)":"none" }}><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      {open && <div style={{ padding:"2px 16px 16px", borderTop:`1px solid ${divider}` }}>{children}</div>}
     </div>
   );
 }
@@ -872,66 +900,77 @@ export default function SpecialtyPage() {
           <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 60, alignItems: "start" }}>
             {/* Body */}
             <div>
-              {content?.about
-                ? content.about.map((para, i) => (
-                    <p key={i} style={{ fontSize: 14.5, lineHeight: 1.8, color: "#5a7085", marginBottom: 16 }}>{para}</p>
-                  ))
-                : <>
-                    <p style={{ fontSize: 14.5, lineHeight: 1.8, color: "#5a7085", marginBottom: 16 }}>
-                      {specialtyName} is a specialized area of healthcare focused on the diagnosis, treatment, and prevention of related disorders. Providers use evidence-based approaches to restore proper function, relieve symptoms, and improve quality of life.
-                    </p>
-                    <p style={{ fontSize: 14.5, lineHeight: 1.8, color: "#5a7085", marginBottom: 16 }}>
+              {/* First paragraph always visible */}
+              <p style={{ fontSize: 14.5, lineHeight: 1.8, color: "#5a7085", marginBottom: 20 }}>
+                {content?.about?.[0] ?? `${specialtyName} is a specialized area of healthcare focused on the diagnosis, treatment, and prevention of related disorders. Providers use evidence-based approaches to restore proper function, relieve symptoms, and improve quality of life.`}
+              </p>
+
+              {/* Expandable details */}
+              <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 28 }}>
+                {content?.about && content.about.length > 1 && (
+                  <ExpandRow title="More about this specialty">
+                    {content.about.slice(1).map((para, i) => (
+                      <p key={i} style={{ fontSize: 14, lineHeight: 1.8, color: "#5a7085", marginTop: 12, marginBottom: 0 }}>{para}</p>
+                    ))}
+                  </ExpandRow>
+                )}
+                {!content?.about && (
+                  <ExpandRow title="More about this specialty">
+                    <p style={{ fontSize: 14, lineHeight: 1.8, color: "#5a7085", marginTop: 12, marginBottom: 0 }}>
                       {specialtyName} care is covered by most private insurance plans and is one of the most widely accessed healthcare specialties.
                     </p>
-                  </>
-              }
+                  </ExpandRow>
+                )}
+                {content?.howItWorks && (
+                  <ExpandRow title={`How ${specialtyName.toLowerCase()} works`}>
+                    <p style={{ fontSize: 14, lineHeight: 1.8, color: "#5a7085", marginTop: 12, marginBottom: 0 }}>{content.howItWorks}</p>
+                  </ExpandRow>
+                )}
+                {content?.types && (
+                  <ExpandRow title="Types you may encounter">
+                    <p style={{ fontSize: 14, lineHeight: 1.8, color: "#5a7085", marginTop: 12, marginBottom: 0 }}>{content.types}</p>
+                  </ExpandRow>
+                )}
+              </div>
 
-              {content?.howItWorks && (
-                <>
-                  <div style={{ fontFamily: "Outfit, sans-serif", fontWeight: 700, fontSize: 15, color: "#071e34", margin: "24px 0 12px" }}>How {specialtyName.toLowerCase()} works</div>
-                  <p style={{ fontSize: 14.5, lineHeight: 1.8, color: "#5a7085", marginBottom: 8 }}>{content.howItWorks}</p>
-                </>
-              )}
-
-              {content?.types && (
-                <>
-                  <div style={{ fontFamily: "Outfit, sans-serif", fontWeight: 700, fontSize: 15, color: "#071e34", margin: "24px 0 12px" }}>Types you may encounter</div>
-                  <p style={{ fontSize: 14.5, lineHeight: 1.8, color: "#5a7085", marginBottom: 8 }}>{content.types}</p>
-                </>
-              )}
-
-              <div style={{ fontFamily: "Outfit, sans-serif", fontWeight: 700, fontSize: 15, color: "#071e34", margin: "24px 0 12px" }}>When should you see {content ? "an" : "a"} {singular.toLowerCase()}?</div>
-              <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: 8 }}>
+              {/* When to see — numbered */}
+              <div style={{ fontFamily: "Outfit, sans-serif", fontWeight: 700, fontSize: 15, color: "#071e34", marginBottom: 14 }}>
+                When to see {content ? "an" : "a"} {singular.toLowerCase()}
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 9, marginBottom: 28 }}>
                 {(content?.whenToSee ?? [
-                  `Persistent symptoms that don't resolve on their own`,
-                  `Recurring or worsening conditions`,
-                  `Following an injury or medical event`,
-                  `Preventive care and routine health maintenance`,
-                  `Second opinion on a diagnosis or treatment plan`,
-                  `Specialized evaluation or procedure`,
-                ]).map(item => (
-                  <li key={item} style={{ display: "flex", alignItems: "flex-start", gap: 10, fontSize: 14, color: "#5a7085", lineHeight: 1.6 }}>
-                    <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#32cce0", flexShrink: 0, marginTop: 7 }} />
+                  "Persistent symptoms that don't resolve on their own",
+                  "Recurring or worsening conditions",
+                  "Following an injury or medical event",
+                  "Preventive care and routine health maintenance",
+                  "Second opinion on a diagnosis or treatment plan",
+                  "Specialized evaluation or procedure",
+                ]).map((item, i) => (
+                  <div key={i} style={{ display: "flex", gap: 12, alignItems: "flex-start", fontSize: 14, color: "#5a7085", lineHeight: 1.6 }}>
+                    <div style={{ width: 22, height: 22, borderRadius: "50%", background: "rgba(50,204,224,.1)", border: "1px solid rgba(50,204,224,.25)", color: "#1075ad", fontSize: 10, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 1 }}>{i + 1}</div>
                     {item}
-                  </li>
+                  </div>
                 ))}
-              </ul>
+              </div>
 
-              <div style={{ fontFamily: "Outfit, sans-serif", fontWeight: 700, fontSize: 15, color: "#071e34", margin: "24px 0 12px" }}>How to choose the right provider</div>
-              <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: 8 }}>
+              {/* How to choose — checkmarks */}
+              <div style={{ fontFamily: "Outfit, sans-serif", fontWeight: 700, fontSize: 15, color: "#071e34", marginBottom: 14 }}>
+                How to choose the right provider
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                 {[
-                  "Check their credentials and board certification",
-                  "Read verified patient reviews to understand their communication style",
+                  "Check credentials and board certification",
+                  "Read verified patient reviews for communication style and bedside manner",
                   "Confirm they treat your specific condition",
-                  "Verify their insurance compatibility before booking",
-                  "Look for providers who offer a thorough initial assessment",
+                  "Verify insurance compatibility before booking",
+                  "Look for providers offering a thorough initial assessment",
                 ].map(item => (
-                  <li key={item} style={{ display: "flex", alignItems: "flex-start", gap: 10, fontSize: 14, color: "#5a7085", lineHeight: 1.6 }}>
-                    <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#32cce0", flexShrink: 0, marginTop: 7 }} />
+                  <div key={item} style={{ display: "flex", gap: 10, alignItems: "flex-start", fontSize: 14, color: "#5a7085", lineHeight: 1.5 }}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#32cce0" strokeWidth="2.5" style={{ flexShrink: 0, marginTop: 2 }}><polyline points="20,6 9,17 4,12"/></svg>
                     {item}
-                  </li>
+                  </div>
                 ))}
-              </ul>
+              </div>
             </div>
 
             {/* Aside cards */}
@@ -980,19 +1019,20 @@ export default function SpecialtyPage() {
               {sectionLabel("Licensing & Credentials")}
               {sectionTitle(<>What <em style={{ fontStyle: "italic", color: "#1075ad", fontWeight: 800 }}>&#8220;Licensed {singular}&#8221;</em> Means</>)}
             </div>
-            <p style={{ fontSize: 14.5, lineHeight: 1.8, color: "#5a7085", marginBottom: 32, maxWidth: 760 }}>
-              Licensing requirements vary by jurisdiction, but both the United States and Canada maintain rigorous credentialing standards for practitioners using protected titles.
-            </p>
-            <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 20 }}>
+            <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 16 }}>
               {content.credentials.map(cred => (
-                <div key={cred.region} style={{ background: "#fff", border: "1.5px solid #cce4f0", borderRadius: 14, padding: "24px 28px" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+                <div key={cred.region} style={{ background: "#fff", border: "1.5px solid #cce4f0", borderRadius: 14, overflow: "hidden" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "20px 24px 16px" }}>
                     <div style={{ width: 36, height: 36, borderRadius: 10, background: "linear-gradient(135deg, #eef9fc, #c8edf7)", border: "1px solid #cce4f0", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1075ad" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                     </div>
                     <div style={{ fontFamily: "Outfit, sans-serif", fontWeight: 700, fontSize: 16, color: "#071e34" }}>{cred.region}</div>
                   </div>
-                  <p style={{ fontSize: 13.5, lineHeight: 1.75, color: "#5a7085" }}>{cred.body}</p>
+                  <div style={{ padding: "0 24px 20px" }}>
+                    <ExpandRow title="View licensing requirements">
+                      <p style={{ fontSize: 13.5, lineHeight: 1.75, color: "#5a7085", marginTop: 12, marginBottom: 0 }}>{cred.body}</p>
+                    </ExpandRow>
+                  </div>
                 </div>
               ))}
             </div>
@@ -1002,33 +1042,51 @@ export default function SpecialtyPage() {
 
       {/* ─── 7c. EVIDENCE BASE (acupuncture + any specialty with evidence data) ── */}
       {content?.evidenceBase && (
-        <section style={{ background: "#fff", padding: isMobile ? "60px 24px" : "80px 48px" }}>
+        <section style={{ background: "#071e34", padding: isMobile ? "60px 24px" : "80px 48px" }}>
           <div style={{ maxWidth: 1160, margin: "0 auto" }}>
-            <div style={{ marginBottom: 44 }}>
-              {sectionLabel("Research & Evidence")}
-              {sectionTitle(<>The Evidence <em style={{ fontStyle: "italic", color: "#1075ad", fontWeight: 800 }}>Base</em></>)}
+            {/* Header */}
+            <div style={{ marginBottom: 40 }}>
+              <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.1em", color: "#32cce0", textTransform: "uppercase" as const, marginBottom: 12 }}>Research & Evidence</div>
+              <h2 style={{ fontSize: isMobile ? 28 : 40, fontWeight: 800, color: "#fff", margin: 0, lineHeight: 1.15 }}>
+                The Evidence <em style={{ fontStyle: "italic", color: "#32cce0", fontWeight: 800 }}>Base</em>
+              </h2>
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "2fr 1fr", gap: 56, alignItems: "start" }}>
-              <div>
-                {content.evidenceBase.map((para, i) => (
-                  <p key={i} style={{ fontSize: 14.5, lineHeight: 1.85, color: "#5a7085", marginBottom: 18 }}>{para}</p>
+
+            {/* Stat callouts */}
+            {content.evidenceStats && (
+              <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr 1fr" : `repeat(${content.evidenceStats.length}, 1fr)`, gap: 12, marginBottom: 44 }}>
+                {content.evidenceStats.map((stat, i) => (
+                  <div key={i} style={{ background: "rgba(255,255,255,.06)", border: "1px solid rgba(255,255,255,.1)", borderRadius: 12, padding: isMobile ? "16px 12px" : "22px 16px", textAlign: "center" as const }}>
+                    <div style={{ fontSize: isMobile ? 26 : 34, fontWeight: 800, color: "#32cce0", lineHeight: 1, letterSpacing: "-0.02em" }}>{stat.value}</div>
+                    <div style={{ fontSize: 11.5, color: "rgba(255,255,255,.55)", marginTop: 8, lineHeight: 1.4 }}>{stat.label}</div>
+                  </div>
                 ))}
               </div>
+            )}
+
+            {/* Prose — full width */}
+            <p style={{ fontSize: 15, lineHeight: 1.85, color: "rgba(255,255,255,.72)", marginBottom: 20 }}>{content.evidenceBase[0]}</p>
+
+            {/* Read more + Sources side by side */}
+            <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 12, alignItems: "start" }}>
+              {content.evidenceBase.length > 1 && (
+                <ExpandRow title="Read more research details" dark>
+                  {content.evidenceBase.slice(1).map((para, i) => (
+                    <p key={i} style={{ fontSize: 14, lineHeight: 1.8, color: "rgba(255,255,255,.6)", marginTop: 14, marginBottom: 0 }}>{para}</p>
+                  ))}
+                </ExpandRow>
+              )}
               {content.sources && (
-                <div style={{ background: "#f4f9fc", border: "1px solid #e8eef2", borderRadius: 14, padding: "24px 24px" }}>
-                  <div style={{ fontFamily: "Outfit, sans-serif", fontWeight: 700, fontSize: 13, color: "#071e34", marginBottom: 16, display: "flex", alignItems: "center", gap: 8 }}>
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1075ad" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-                    Sources &amp; Citations
-                  </div>
-                  <ol style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: 12, paddingLeft: 0 }}>
+                <ExpandRow title={"Sources & Citations"} dark>
+                  <ol style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: 10, paddingLeft: 0, marginTop: 10 }}>
                     {content.sources.map((src, i) => (
-                      <li key={i} style={{ display: "flex", gap: 10, fontSize: 12, color: "#5a7085", lineHeight: 1.6 }}>
-                        <span style={{ fontFamily: "Outfit, sans-serif", fontWeight: 700, color: "#1075ad", flexShrink: 0, fontSize: 11 }}>{i + 1}.</span>
+                      <li key={i} style={{ display: "flex", gap: 10, fontSize: 12, color: "rgba(255,255,255,.5)", lineHeight: 1.6 }}>
+                        <span style={{ fontFamily: "Outfit, sans-serif", fontWeight: 700, color: "#32cce0", flexShrink: 0, fontSize: 11 }}>{i + 1}.</span>
                         {src}
                       </li>
                     ))}
                   </ol>
-                </div>
+                </ExpandRow>
               )}
             </div>
           </div>
