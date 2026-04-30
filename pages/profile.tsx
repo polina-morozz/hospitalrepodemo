@@ -10,7 +10,16 @@ export default function ProfilePage() {
   const [newEmail, setNewEmail] = useState("");
   const [emailSent, setEmailSent] = useState(false);
   const [showEmailChange, setShowEmailChange] = useState(false);
+  const [showPwChange, setShowPwChange] = useState(false);
+  const [pw, setPw] = useState({ current:"", newPw:"", confirm:"" });
+  const [pwSaved, setPwSaved] = useState(false);
   const isMobile = useIsMobile();
+
+  const handlePwChange = () => {
+    if (!pw.current || !pw.newPw || pw.newPw !== pw.confirm) return;
+    setPwSaved(true);
+    setTimeout(() => { setPwSaved(false); setShowPwChange(false); setPw({ current:"", newPw:"", confirm:"" }); }, 3000);
+  };
 
   const handleSave = () => { setSaved(true); setTimeout(()=>setSaved(false), 3000); };
   const handleEmailChange = () => {
@@ -88,6 +97,37 @@ export default function ProfilePage() {
               )}
             </div>
             <Field label="Phone Number" field="phone" type="tel" />
+          </div>
+
+          {/* Change Password */}
+          <div style={{ background:C.white, border:`1px solid ${C.border}`, borderRadius:16, padding:"24px", marginBottom:18, boxShadow:"0 1px 6px rgba(0,0,0,.04)" }}>
+            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:showPwChange?14:0 }}>
+              <h2 style={{ fontWeight:700, fontSize:16 }}>Password</h2>
+              <button onClick={()=>setShowPwChange(s=>!s)} style={{ background:"none", border:`1.5px solid ${C.border}`, borderRadius:10, padding:"8px 16px", fontSize:13, fontWeight:600, color:C.teal, cursor:"pointer", fontFamily:"inherit", whiteSpace:"nowrap" }}>{showPwChange?"Cancel":"Change Password"}</button>
+            </div>
+            {showPwChange && (
+              <div className="fade-up">
+                {pwSaved ? (
+                  <div style={{ display:"flex", alignItems:"center", gap:8, padding:"8px 0" }}>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={C.green} strokeWidth="2.5"><polyline points="20,6 9,17 4,12"/></svg>
+                    <span style={{ fontWeight:700, fontSize:14, color:C.green }}>Password updated!</span>
+                  </div>
+                ) : (
+                  <>
+                    {([["Current Password","current"],["New Password","newPw"],["Confirm New Password","confirm"]] as [string,string][]).map(([l,k])=>(
+                      <div key={k} style={{ marginBottom:14 }}>
+                        <label style={{ fontSize:12, fontWeight:700, color:C.text, display:"block", marginBottom:5 }}>{l}</label>
+                        <input type="password" value={(pw as Record<string,string>)[k]} onChange={(e: ChangeEvent<HTMLInputElement>)=>setPw(p=>({...p,[k]:e.target.value}))} placeholder="••••••••"
+                          style={{ width:"100%", padding:"10px 14px", border:`1.5px solid ${C.border}`, borderRadius:10, fontSize:14, outline:"none", fontFamily:"inherit", transition:"border-color .15s" }}
+                          onFocus={e=>{(e.target as HTMLInputElement).style.borderColor=C.teal;}} onBlur={e=>{(e.target as HTMLInputElement).style.borderColor=C.border;}} />
+                      </div>
+                    ))}
+                    {pw.newPw && pw.confirm && pw.newPw !== pw.confirm && <p style={{ fontSize:12.5, color:C.red, marginBottom:10 }}>Passwords don&apos;t match</p>}
+                    <button onClick={handlePwChange} style={{ background:C.teal, color:"#fff", border:"none", borderRadius:12, padding:"11px 32px", fontWeight:700, fontSize:14, cursor:"pointer", fontFamily:"inherit" }}>Update Password</button>
+                  </>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Save */}

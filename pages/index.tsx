@@ -76,23 +76,23 @@ export default function HomePage() {
       <div style={{ height:"calc(100vh - 58px)", overflow:"hidden", display:"flex", flexDirection:"column", background:"#fff" }}>
 
         {/* ─── HERO ─────────────────────────────────────────────────────────── */}
-        <div style={{ flex:1, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:isMobile?"20px 20px 8px":"10px 20px 12px" }}>
-          <div className="fade-up" style={{ textAlign:"center", maxWidth:680, width:"100%" }}>
+        <div style={{ flex:1, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:isMobile?"24px 24px 16px":"20px 40px" }}>
+          <div className="fade-up" style={{ textAlign:"center", maxWidth:600, width:"100%" }}>
 
             {/* Logo */}
-            <div style={{ marginBottom:isMobile?6:8 }}>
+            <div style={{ marginBottom:isMobile?8:12 }}>
               <span style={{ fontSize:isMobile?38:60, fontWeight:800, letterSpacing:"-1.5px", fontFamily:"'Outfit', sans-serif" }}>
                 <span style={{ color:C.teal }}>hospital</span><span style={{ color:"#13527a", fontWeight:500, fontSize:isMobile?28:46 }}>.com</span>
               </span>
             </div>
 
             {/* Subtitle */}
-            <p style={{ color:"#7a8fa0", fontSize:isMobile?13:17, marginBottom:isMobile?18:33, fontWeight:400, letterSpacing:"0.1px" }}>
+            <p style={{ color:"#7a8fa0", fontSize:isMobile?13:17, marginBottom:isMobile?20:32, fontWeight:400, letterSpacing:"0.1px" }}>
               Your AI Healthcare Navigator
             </p>
 
             {/* Search bar */}
-            <div style={{ position:"relative", marginBottom:10 }}>
+            <div style={{ position:"relative", marginBottom:isMobile?14:16 }}>
               <input
                 value={q}
                 onChange={e=>setQ(e.target.value)}
@@ -111,10 +111,10 @@ export default function HomePage() {
             </div>
 
             {/* Suggestion chips */}
-            <div className="home-chips" style={{ display:"flex", gap:8, flexWrap:"wrap", justifyContent:"center", marginBottom:isMobile?20:35 }}>
+            <div className="home-chips" style={{ display:"flex", gap:8, flexWrap:"wrap", justifyContent:"center", marginBottom:isMobile?24:36 }}>
               {suggestions.map(s=>(
                 <button key={s} onClick={()=>send(s)}
-                  style={{ background:"#fff", border:`1px solid ${C.border}`, borderRadius:20, padding:isMobile?"5px 12px":"5px 14px", fontSize:isMobile?11:12.5, color:"#7a8fa0", cursor:"pointer", transition:"all .15s", fontFamily:"inherit" }}
+                  style={{ background:"#fff", border:`1px solid ${C.border}`, borderRadius:20, padding:isMobile?"5px 12px":"6px 16px", fontSize:isMobile?11:12.5, color:"#7a8fa0", cursor:"pointer", transition:"all .15s", fontFamily:"inherit" }}
                   onMouseEnter={e=>{(e.currentTarget as HTMLButtonElement).style.borderColor=C.teal;(e.currentTarget as HTMLButtonElement).style.color=C.teal;}}
                   onMouseLeave={e=>{(e.currentTarget as HTMLButtonElement).style.borderColor=C.border;(e.currentTarget as HTMLButtonElement).style.color="#7a8fa0";}}>
                   {s}
@@ -123,18 +123,18 @@ export default function HomePage() {
             </div>
 
             {/* Tagline */}
-            <p style={{ color:"#13527a", fontSize:isMobile?12.5:14.5, fontWeight:600, marginBottom:isMobile?16:22, letterSpacing:"0.1px" }}>
+            <p style={{ color:"#13527a", fontSize:isMobile?12.5:14.5, fontWeight:600, marginBottom:isMobile?20:28, letterSpacing:"0.1px" }}>
               Connecting patients with verified healthcare providers worldwide
             </p>
 
             {/* Feature icons */}
-            <div style={{ display:"flex", gap:isMobile?20:44, justifyContent:"center", flexWrap:"wrap" }}>
+            <div style={{ display:"flex", gap:isMobile?24:56, justifyContent:"center", flexWrap:"wrap" }}>
               {FEATURE_ITEMS.map(({icon,title,sub,href})=>(
                 <button key={title} onClick={()=>router.push(href)}
-                  style={{ background:"none", border:"none", cursor:"pointer", fontFamily:"inherit", display:"flex", flexDirection:"column", alignItems:"center", gap:5, padding:"4px 10px", transition:"transform .15s" }}
+                  style={{ background:"none", border:"none", cursor:"pointer", fontFamily:"inherit", display:"flex", flexDirection:"column", alignItems:"center", gap:6, padding:"6px 12px", transition:"transform .15s" }}
                   onMouseEnter={e=>(e.currentTarget as HTMLButtonElement).style.transform="translateY(-2px)"}
                   onMouseLeave={e=>(e.currentTarget as HTMLButtonElement).style.transform="none"}>
-                  <div style={{ width:44, height:44, display:"flex", alignItems:"center", justifyContent:"center" }}>
+                  <div style={{ width:48, height:48, display:"flex", alignItems:"center", justifyContent:"center" }}>
                     {icon}
                   </div>
                   <div style={{ fontWeight:600, fontSize:12, color:C.text }}>{title}</div>
@@ -147,7 +147,7 @@ export default function HomePage() {
         </div>
 
         {/* ─── FOOTER ───────────────────────────────────────────────────────── */}
-        <div style={{ padding:isMobile?"8px 20px":"8px 40px", background:"#efefef74", borderTop:"1px solid #E2E8ED", display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:8 }}>
+        <div style={{ padding:isMobile?"10px 24px":"10px 40px", background:"#efefef74", borderTop:"1px solid #E2E8ED", display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:8 }}>
           <div style={{ display:"flex", gap:16, alignItems:"center" }}>
             <span style={{ fontSize:10.5, color:"#7a8fa0", cursor:"pointer" }} onMouseEnter={e=>(e.currentTarget as HTMLSpanElement).style.color=C.teal} onMouseLeave={e=>(e.currentTarget as HTMLSpanElement).style.color="#7a8fa0"}>Privacy Policy</span>
             <span style={{ fontSize:10.5, color:"#7a8fa0", cursor:"pointer" }} onMouseEnter={e=>(e.currentTarget as HTMLSpanElement).style.color=C.teal} onMouseLeave={e=>(e.currentTarget as HTMLSpanElement).style.color="#7a8fa0"}>Terms &amp; Conditions</span>

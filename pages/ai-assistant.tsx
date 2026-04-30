@@ -529,21 +529,6 @@ export default function AiAssistantPage() {
                 {activeChatId ? (chatHistory.find(c => c.id === activeChatId)?.title || "Chat") : "New Chat"}
               </div>
             </div>
-            {!isMobile && (
-              <div style={{ display:"flex", gap:6, flexShrink:0 }}>
-                {[
-                  { label:"Recommend a provider",  query:"Recommend a provider" },
-                  { label:"Recommend an international clinic",   query:"international clinic recommendation" },
-                ].map(chip => (
-                  <button key={chip.label} onClick={() => send(chip.query)} disabled={loading}
-                    style={{ background:"none", border:`1px solid ${C.borderLt}`, borderRadius:16, padding:"4px 11px", fontSize:11.5, color:C.textSm, cursor:"pointer", fontFamily:"inherit", fontWeight:500, whiteSpace:"nowrap", transition:"all .15s", opacity:loading?.5:1 }}
-                    onMouseEnter={e=>{const b=e.currentTarget;b.style.borderColor=C.teal;b.style.color=C.teal;b.style.background=C.tealLt;}}
-                    onMouseLeave={e=>{const b=e.currentTarget;b.style.borderColor=C.borderLt;b.style.color=C.textSm;b.style.background="none";}}>
-                    {chip.label}
-                  </button>
-                ))}
-              </div>
-            )}
           </div>
 
           {/* Messages */}
@@ -659,6 +644,19 @@ export default function AiAssistantPage() {
           {/* Input */}
           <div style={{ padding:isMobile?"10px 14px":"12px 20px", background:C.white, borderTop:`1px solid ${C.borderLt}` }}>
             <div style={{ maxWidth:960, margin:"0 auto" }}>
+              <div style={{ display:"flex", gap:6, flexWrap:"wrap", marginBottom:8 }}>
+                {[
+                  { label:"Recommend a provider", query:"Recommend a provider" },
+                  { label:"Recommend an international clinic", query:"international clinic recommendation" },
+                ].map(chip => (
+                  <button key={chip.label} onClick={() => send(chip.query)} disabled={loading}
+                    style={{ background:C.offWhite, border:`1px solid ${C.border}`, borderRadius:16, padding:"3px 10px", fontSize:10.5, color:C.textSm, cursor:"pointer", fontFamily:"inherit", fontWeight:500, whiteSpace:"nowrap", transition:"all .15s", opacity:loading?0.5:1 }}
+                    onMouseEnter={e=>{const b=e.currentTarget;b.style.borderColor=C.teal;b.style.color=C.teal;b.style.background=C.tealLt;}}
+                    onMouseLeave={e=>{const b=e.currentTarget;b.style.borderColor=C.border;b.style.color=C.textSm;b.style.background=C.offWhite;}}>
+                    {chip.label}
+                  </button>
+                ))}
+              </div>
               <div style={{ display:"flex", gap:8, background:C.offWhite, borderRadius:20, padding:"5px 5px 5px 16px", alignItems:"center", border:`1.5px solid ${C.border}`, transition:"border-color .2s, box-shadow .2s" }}>
                 <input value={input} onChange={(e: ChangeEvent<HTMLInputElement>) => setInput(e.target.value)}
                   onKeyDown={e => e.key === "Enter" && send(input)}

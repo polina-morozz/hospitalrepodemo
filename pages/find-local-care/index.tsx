@@ -135,24 +135,57 @@ const SEO_PROCEDURES = [
 ];
 
 // ─── SEO LINK GRID ────────────────────────────────────────────────────────────
+const CITY_META: Record<string, { short: string; color: string }> = {
+  "New York":    { short:"NY",  color:"#0a3d6b" },
+  "Los Angeles": { short:"LA",  color:"#c0622a" },
+  "Chicago":     { short:"CHI", color:"#1a5c36" },
+  "Houston":     { short:"HOU", color:"#6b2d8e" },
+  "Miami":       { short:"MIA", color:"#0e7a6e" },
+};
+
 function SeoLinkGrid({ onProcedureClick }: { onProcedureClick?: (proc: string) => void }) {
   const router = useRouter();
   const isMobile = useIsMobile();
   const [tab, setTab] = useState<"specialty"|"procedure">("specialty");
-  const [showAll, setShowAll] = useState(false);
+  const [selectedCity, setSelectedCity] = useState("All");
 
-  const INITIAL_COUNT = 8;
+  const items = tab === "specialty" ? SEO_SPECIALTIES : SEO_PROCEDURES.map(p => ({ label:p, slug:p, cityPages:{} as Record<string,string> }));
+
+  const handleClick = (item: typeof items[0]) => {
+    const label = "label" in item ? item.label : item as unknown as string;
+    if (tab === "specialty") {
+      const sp = item as typeof SEO_SPECIALTIES[0];
+      if (selectedCity !== "All" && sp.cityPages[selectedCity]) {
+        router.push(`/find-local-care/${sp.slug}/${sp.cityPages[selectedCity]}`);
+      } else {
+        router.push(`/find-local-care/${sp.slug}`);
+      }
+    } else {
+      if (onProcedureClick) onProcedureClick(label as string);
+      else router.push("/find-local-care");
+    }
+  };
+
+  const PinIcon = ({ color = C.teal }: { color?: string }) => (
+    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink:0 }}>
+      <path d="M12 2a7 7 0 0 1 7 7c0 5-7 13-7 13S5 14 5 9a7 7 0 0 1 7-7z"/><circle cx="12" cy="9" r="2.5"/>
+    </svg>
+  );
 
   return (
-    <section style={{ padding:isMobile?"48px 0 40px":"56px 0 48px", borderTop:`1px solid ${C.borderLt}`, marginTop:isMobile?32:48 }}>
-      <div style={{ fontFamily:"Outfit, sans-serif", fontSize:11, fontWeight:700, letterSpacing:"0.14em", textTransform:"uppercase" as const, color:C.blue, marginBottom:8 }}>
-        Explore by Location
-      </div>
-      <div style={{ display:"flex", alignItems:isMobile?"flex-start":"center", justifyContent:"space-between", flexDirection:isMobile?"column":"row" as const, gap:16, marginBottom:24 }}>
-        <h2 style={{ fontFamily:"Outfit, sans-serif", fontSize:isMobile?20:26, fontWeight:700, color:"#071e34", margin:0, letterSpacing:"-0.02em" }}>
-          Find Care Near You
-        </h2>
-        <div style={{ display:"flex", gap:0, background:"#f0f4f6", borderRadius:10, padding:3 }}>
+    <section style={{ padding:isMobile?"40px 0 32px":"52px 0 44px", borderTop:`1px solid ${C.borderLt}`, marginTop:isMobile?32:48 }}>
+
+      {/* Header row */}
+      <div style={{ display:"flex", alignItems:isMobile?"flex-start":"center", justifyContent:"space-between", flexDirection:isMobile?"column":"row" as const, gap:14, marginBottom:20 }}>
+        <div>
+          <div style={{ fontFamily:"Outfit, sans-serif", fontSize:11, fontWeight:700, letterSpacing:"0.14em", textTransform:"uppercase" as const, color:C.blue, marginBottom:6 }}>
+            Explore by Location
+          </div>
+          <h2 style={{ fontFamily:"Outfit, sans-serif", fontSize:isMobile?20:24, fontWeight:700, color:"#071e34", margin:0, letterSpacing:"-0.02em" }}>
+            Find Care Near You
+          </h2>
+        </div>
+        <div style={{ display:"flex", gap:0, background:"#f0f4f6", borderRadius:10, padding:3, flexShrink:0 }}>
           {(["specialty","procedure"] as const).map(t => (
             <button key={t} onClick={() => setTab(t)}
               style={{ padding:"7px 18px", border:"none", borderRadius:8, background:tab===t?"#fff":"transparent", fontWeight:tab===t?700:400, fontSize:12.5, cursor:"pointer", color:tab===t?"#071e34":C.textSm, boxShadow:tab===t?"0 1px 4px rgba(0,0,0,.08)":"none", fontFamily:"inherit", transition:"all .15s", whiteSpace:"nowrap" as const }}>
@@ -162,44 +195,82 @@ function SeoLinkGrid({ onProcedureClick }: { onProcedureClick?: (proc: string) =
         </div>
       </div>
 
-      {(() => {
-        const items = tab === "specialty" ? SEO_SPECIALTIES : SEO_PROCEDURES.map(p => ({ label:p, slug:p, cityPages:{} as Record<string,string> }));
-        const visible = isMobile && !showAll ? items.slice(0, INITIAL_COUNT) : items;
-        return (
-          <>
-            <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr 1fr":"repeat(5,1fr)", gap:"20px 28px" }}>
-              {visible.map(item => (
-                <div key={"label" in item ? item.label : item}>
-                  <div style={{ fontWeight:700, fontSize:12.5, color:"#071e34", marginBottom:7, lineHeight:1.3 }}>{"label" in item ? item.label : item}</div>
-                  <div style={{ display:"flex", flexDirection:"column" as const, gap:5 }}>
-                    {TOP_CITIES.map(city => {
-                      const sp = tab === "specialty" ? item as typeof SEO_SPECIALTIES[0] : null;
-                      const href = sp?.cityPages[city] ? `/find-local-care/${sp.slug}/${sp.cityPages[city]}` : sp ? `/find-local-care/${sp.slug}` : null;
-                      return (
-                        <button key={city}
-                          onClick={() => href ? router.push(href) : onProcedureClick ? onProcedureClick(("label" in item ? item.label : item) as string) : router.push("/find-local-care")}
-                          style={{ background:"none", border:"none", cursor:"pointer", fontFamily:"inherit", fontSize:12, color:C.blue, padding:0, textAlign:"left" as const, lineHeight:1.5 }}
-                          onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.textDecoration="underline"; }}
-                          onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.textDecoration="none"; }}>
-                          in {city}
-                        </button>
-                      );
-                    })}
-                  </div>
+      {/* City selector */}
+      <div style={{ display:"flex", gap:8, flexWrap:"wrap" as const, marginBottom:24 }}>
+        {["All", ...TOP_CITIES].map(city => {
+          const selected = selectedCity === city;
+          const meta = city !== "All" ? CITY_META[city] : null;
+          return (
+            <button key={city} onClick={() => setSelectedCity(city)}
+              style={{
+                display:"flex", alignItems:"center", gap:6,
+                padding:"7px 14px",
+                border:`1.5px solid ${selected ? C.teal : C.borderLt}`,
+                borderRadius:22,
+                background: selected ? C.tealLt : "#fff",
+                color: selected ? C.teal : C.textMd,
+                fontSize:12.5, fontWeight:selected?700:500,
+                cursor:"pointer", fontFamily:"inherit",
+                transition:"all .15s",
+                whiteSpace:"nowrap" as const,
+              }}
+              onMouseEnter={e => { if (!selected) { (e.currentTarget as HTMLButtonElement).style.borderColor=C.teal; (e.currentTarget as HTMLButtonElement).style.color=C.teal; }}}
+              onMouseLeave={e => { if (!selected) { (e.currentTarget as HTMLButtonElement).style.borderColor=C.borderLt; (e.currentTarget as HTMLButtonElement).style.color=C.textMd; }}}>
+              {city === "All"
+                ? <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke={selected?C.teal:C.textMd} strokeWidth="2.5"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                : <PinIcon color={selected ? C.teal : C.textMd} />
+              }
+              {city === "All" ? "All Cities" : city}
+              {meta && (
+                <span style={{ fontSize:10, fontWeight:700, padding:"1px 6px", borderRadius:8, background:selected?`${C.teal}20`:"#f0f4f6", color:selected?C.teal:C.textSm, letterSpacing:"0.04em" }}>
+                  {meta.short}
+                </span>
+              )}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Specialty / Procedure grid */}
+      <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr 1fr":"repeat(auto-fill, minmax(180px, 1fr))", gap:10 }}>
+        {items.map(item => {
+          const label = "label" in item ? item.label : item as unknown as string;
+          const chip = SPECIALTY_CHIPS.find(c => c.name.toLowerCase() === label.toLowerCase());
+          const procChip = PROCEDURE_CHIPS.find(c => c.name.toLowerCase() === label.toLowerCase());
+          const iconEl = chip?.icon ?? procChip?.icon;
+          const count = chip?.count ?? procChip?.count;
+
+          return (
+            <button key={label} onClick={() => handleClick(item)}
+              style={{
+                display:"flex", alignItems:"center", gap:10,
+                padding:"12px 14px",
+                background:"#fff",
+                border:`1px solid ${C.borderLt}`,
+                borderRadius:12,
+                cursor:"pointer", fontFamily:"inherit",
+                textAlign:"left" as const,
+                transition:"all .15s",
+              }}
+              onMouseEnter={e => { const b = e.currentTarget as HTMLButtonElement; b.style.borderColor=C.teal; b.style.background=C.tealLt; b.style.boxShadow=`0 2px 10px rgba(70,196,217,.12)`; }}
+              onMouseLeave={e => { const b = e.currentTarget as HTMLButtonElement; b.style.borderColor=C.borderLt; b.style.background="#fff"; b.style.boxShadow="none"; }}>
+              {iconEl && (
+                <div style={{ width:28, height:28, borderRadius:8, background:C.tealLt, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
+                  {iconEl}
                 </div>
-              ))}
-            </div>
-            {isMobile && items.length > INITIAL_COUNT && (
-              <button onClick={() => setShowAll(s => !s)}
-                style={{ marginTop:20, width:"100%", padding:"11px 0", border:`1.5px solid ${C.borderLt}`, borderRadius:10, background:"#fff", fontFamily:"inherit", fontSize:13, fontWeight:600, color:C.blue, cursor:"pointer", transition:"all .15s" }}
-                onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.borderColor=C.teal; (e.currentTarget as HTMLButtonElement).style.color=C.teal; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.borderColor=C.borderLt; (e.currentTarget as HTMLButtonElement).style.color=C.blue; }}>
-                {showAll ? "Show less" : `Show all ${items.length} ${tab === "specialty" ? "specialties" : "procedures"}`}
-              </button>
-            )}
-          </>
-        );
-      })()}
+              )}
+              <div style={{ flex:1, minWidth:0 }}>
+                <div style={{ fontSize:12.5, fontWeight:600, color:"#071e34", lineHeight:1.3, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" as const }}>{label}</div>
+                <div style={{ fontSize:11, color:C.textSm, marginTop:2 }}>
+                  {selectedCity === "All" ? (count ? `${count} providers` : "View all") : `in ${selectedCity}`}
+                </div>
+              </div>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={C.textSm} strokeWidth="2.5" style={{ flexShrink:0 }}><polyline points="9,18 15,12 9,6"/></svg>
+            </button>
+          );
+        })}
+      </div>
+
     </section>
   );
 }
